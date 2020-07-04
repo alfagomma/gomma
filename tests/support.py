@@ -9,7 +9,7 @@ Support test API
 import logging
 import time
 
-from agbot.support.core import Support
+from gomma.support.core import Support
 
 class test():
     """ test support """

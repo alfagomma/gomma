@@ -14,7 +14,7 @@ import json
 import logging
 import time
 
-from agbot.session import Session, parseApiError
+from gomma.session import Session, parseApiError
 
 class Graph(object):
     """

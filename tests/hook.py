@@ -7,7 +7,7 @@ HOOK test
 """
 
 import logging
-from agbot.hook.core import Hook
+from gomma.hook.core import Hook
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)

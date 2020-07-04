@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 class Cache(object):
     """ Cache utilities."""
 
-    cachePath= '.cache/agbot'    
+    cachePath= '.cache/gomma'    
 
     def __init__(self):
         """Init new Cache utility."""

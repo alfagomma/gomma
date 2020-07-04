@@ -7,7 +7,7 @@ Element test
 """
 
 import logging
-from agbot.element.core import Element
+from gomma.element.core import Element
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
@@ -47,8 +47,8 @@ def testwh():
     # import argparse
     logger.debug('Init test')
     payload={
-        'name': 'test_agbot',
-        'description': "description test agbot"
+        'name': 'test_gomma',
+        'description': "description test gomma"
     }
     create_wh = el.createWarehouse(payload)
     logger.info(create_wh)

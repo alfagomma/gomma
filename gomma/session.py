@@ -18,19 +18,19 @@ from redis import Redis
 
 class Session(object):
     """
-    AGBot Session class .
+    Gomma Session class .
     """
     config=False
     __agent=False
     __credentials=False
-    __cacheKey = 'ag:agbot'
+    __cacheKey = 'ag:gomma'
 
     def __init__(self, profile_name=None):
         """
         Initialize main class with this and that.
         """
         if not profile_name:profile_name='default'      
-        logging.debug(f'Init agbot session with {profile_name} profile.')
+        logging.debug(f'Init gomma session with {profile_name} profile.')
         ## Config
         config_path = os.path.expanduser('~/.agcloud/config')
         cp = configparser.ConfigParser()
@@ -112,7 +112,7 @@ class Session(object):
         """ Create requests session. """
         logging.debug('Creating new requests session')
         agent=requests.Session()
-        agent.headers.update({'user-agent': 'AGBot-Session'})
+        agent.headers.update({'user-agent': 'Gomma-Session'})
         if not token:
             token = self.__getToken()
             if not token:return False

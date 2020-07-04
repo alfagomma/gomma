@@ -8,7 +8,7 @@ Base test
 
 import logging
 
-from agbot.base.core import Base
+from gomma.base.core import Base
 
 class test():
     """ Test base """

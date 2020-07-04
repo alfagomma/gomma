@@ -1,1 +1,1 @@
-print('Hello from AGBot!')
+print('Hello from Gomma!')

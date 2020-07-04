@@ -13,7 +13,7 @@ __date__ = "2020-03-16"
 import json
 import logging
 
-from agbot.session import Session, parseApiError
+from gomma.session import Session, parseApiError
 
 class Support(object):
     """

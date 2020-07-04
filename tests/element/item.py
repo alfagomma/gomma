@@ -7,7 +7,7 @@ Element test item
 """
 
 import logging, time
-from agbot.element.core import Element
+from gomma.element.core import Element
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)

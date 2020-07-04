@@ -13,7 +13,7 @@ __date__ = "2019-11-07"
 import json
 import logging
 
-from agbot.session import Session, parseApiError
+from gomma.session import Session, parseApiError
 
 class Base(object):
     """

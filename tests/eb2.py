@@ -8,7 +8,7 @@ EB2 test
 
 import logging
 
-from agbot.eb2.core import Eb2
+from gomma.eb2.core import Eb2
 
 class test():
     """test eb2"""

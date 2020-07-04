@@ -8,7 +8,7 @@ H2O test
 
 import logging
 
-from agbot.h2o.core import H2o
+from gomma.h2o.core import H2o
  
 class test():
     """test h2o"""

@@ -7,7 +7,7 @@ Graph test
 """
 
 import logging
-from agbot.graph.core import Graph
+from gomma.graph.core import Graph
 
 logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
