@@ -1,0 +1,26 @@
+.DS_Store
+.env
+venv/
+logs
+.vscode
+Thumbs.db
+*.pyc
+__pycache__
+dist
+build
+docs/build
+docs/source/reference/services
+tests/cover
+tests/.coverage
+*.egg-info
+
+# vitualenv
+Pipfile.lock
+
+# Common virtualenv names
+venv
+env2
+env3
+
+# IntelliJ / PyCharm IDE
+.idea/
