@@ -832,10 +832,10 @@ class Element(object):
         tree = json.loads(r.text)
         return tree    
 
-    def getTreeLeaves(self, catalog_id:int, params=None):
+    def getTreeLeaves(self, catalog_id:int, tree_id:int, params=None):
         """ Get catalog tree leaves """
-        logging.info(f'Get catalog tree {catalog_id}')
-        rq = f'{self.host}/leaf'
+        logging.info(f'Get catalog tree {tree_id} into catalog {catalog_id}')
+        rq = f'{self.host}/catalog/{catalog_id}/tree/{tree_id}/leaf'
         agent=self.s.getAgent()
         r = agent.get(rq, params=params)
         if 200 != r.status_code:
@@ -846,7 +846,7 @@ class Element(object):
     def getTreeLeaf(self, catalog_id:int, tree_id:int, leaf_id:int, params=None):
         """ Get catalog tree leaf ID """
         logging.info(f'Get catalog tree {catalog_id}')
-        rq = f'{self.host}/leaf/{leaf_id}'
+        rq = f'{self.host}/catalog/{catalog_id}/tree/{tree_id}/leaf/{leaf_id}'
         agent=self.s.getAgent()
         r = agent.get(rq, params=params)
         if 200 != r.status_code:
