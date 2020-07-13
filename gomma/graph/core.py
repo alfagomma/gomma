@@ -16,6 +16,7 @@ import time
 
 from gomma.session import Session, parseApiError
 
+
 class Graph(object):
     """
     Graph Open Data core class .

@@ -10,8 +10,13 @@ __author__ = "Davide Pellegrino"
 __version__ = "1.1.2"
 __date__ = "2020-01-20"
 
-import json, logging, time
+import json
+import logging
+import time
+
 from gomma.session import Session, parseApiError
+
+
 class Eb2(object):
     """
     Eb2 core class .

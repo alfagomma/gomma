@@ -16,6 +16,7 @@ import time
 
 from gomma.session import Session, parseApiError
 
+
 class Element(object):
     """
     Element core class .
