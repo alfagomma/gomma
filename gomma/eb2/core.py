@@ -7,7 +7,7 @@ Eb2 SDK
 """
 
 __author__ = "Davide Pellegrino"
-__version__ = "1.1.2"
+__version__ = "1.1.3"
 __date__ = "2020-01-20"
 
 import json
@@ -74,7 +74,7 @@ class Eb2(object):
         logging.info('Create company %s' % company['data']['id'])
         return company
 
-    def getCompanyFromExt_id(self, ext_id:int, params=None):
+    def getCompanyFromExt_id(self, ext_id:str, params=None):
         """
         Get company from ext_id.
         """
