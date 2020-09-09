@@ -23,7 +23,7 @@ class test():
         print(companies)
         company = self.e.getCompany(3)
         print(company)
-        ext_id='AG1'
+        ext_id='AG00'
         companyext = self.e.getCompanyFromExt_id(ext_id)
         print(companyext)
 
