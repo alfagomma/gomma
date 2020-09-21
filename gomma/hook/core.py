@@ -14,9 +14,10 @@ import json
 import logging
 import time
 
-from gomma.session import Session, parseApiError
+from gomma.session import Session
 
 logger = logging.getLogger(__name__)
+
 
 class Hook(object):
     """
@@ -29,48 +30,39 @@ class Hook(object):
         """
         logging.info('Init Coral SDK')
         s = Session(profile_name)
-        host=s.config.get('agapi_host')
-        self.host = f'{host}/coral'
+        host = s.config.get('hook_host')
+        self.host = f'{host}'
         self.s = s
 
-    #ERP
+    # ERP
     def erp_sap_material(self, payload):
         """
         Call erp sap worker queue
         """
         logging.debug(f'Calling erp sap queue')
         rq = f'{self.host}/erp/sap/material'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
-        if 201 != r.status_code:
-            parseApiError(r)
-            return False
-        return True
-   
-    #ERP SAP CUSTOMER
+        return self.s.response(r)
+
+    # ERP SAP CUSTOMER
     def erp_sap_customer(self, payload):
         """
         Call erp sap customer worker queue
         """
         logging.debug(f'Calling erp sap customer queue')
         rq = f'{self.host}/erp/sap/customer'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
-        if 201 != r.status_code:
-            parseApiError(r)
-            return False
-        return True    
+        return self.s.response(r)
 
-    #ERP SAP SUPPLIER
+    # ERP SAP SUPPLIER
     def erp_sap_supplier(self, payload):
         """
         Call erp sap supplier worker queue
         """
         logging.debug(f'Calling erp sap supplier queue')
         rq = f'{self.host}/erp/sap/supplier'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
-        if 201 != r.status_code:
-            parseApiError(r)
-            return False
-        return True   
+        return self.s.response(r)

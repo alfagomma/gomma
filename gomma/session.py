@@ -16,39 +16,41 @@ from sys import exit
 import requests
 from redis import Redis
 
+
 class Session(object):
     """
     Gomma Session class .
     """
-    config=False
-    __agent=False
-    __credentials=False
+    config = False
+    __agent = False
+    __credentials = False
     __cacheKey = 'ag:gomma'
 
     def __init__(self, profile_name=None):
         """
         Initialize main class with this and that.
         """
-        if not profile_name:profile_name='default'      
+        if not profile_name:
+            profile_name = 'default'
         logging.debug(f'Init gomma session with {profile_name} profile.')
-        ## Config
+        # Config
         config_path = os.path.expanduser('~/.agcloud/config')
         cp = configparser.ConfigParser()
         cp.read(config_path)
         if not cp.has_section(profile_name):
             logging.error(f'Unknow {profile_name} configs!')
             exit(1)
-        self.config=cp[profile_name]
+        self.config = cp[profile_name]
         # #hosts
-        ## Credentials
+        # Credentials
         credentials_path = os.path.expanduser('~/.agcloud/credentials')
         ccp = configparser.ConfigParser()
         ccp.read(credentials_path)
         if not ccp.has_section(profile_name):
             logging.error(f'Unknow {profile_name} credentials!')
             exit(1)
-        self.__credentials=ccp[profile_name]
-        #cache
+        self.__credentials = ccp[profile_name]
+        # cache
         self.__setCache()
 
     def __setCache(self):
@@ -56,7 +58,8 @@ class Session(object):
         logging.debug('Setting redis cache...')
         redis_host = self.config.get('redis_host', '127.0.0.1')
         redis_pass = self.__credentials.get('redis_password', None)
-        self.cache=Redis(host=redis_host, password=redis_pass, decode_responses=True)
+        self.cache = Redis(
+            host=redis_host, password=redis_pass, decode_responses=True)
         return True
 
     def __getToken(self):
@@ -73,9 +76,9 @@ class Session(object):
         expire_in = payload['expires_in']
         uid = payload['access_token']
         token = {
-            'uid' : uid
+            'uid': uid
         }
-        tokenExpireAt=int(time.time()) + expire_in
+        tokenExpireAt = int(time.time()) + expire_in
         self.cache.hmset(self.__cacheKey, token)
         self.cache.expireat(self.__cacheKey, int(tokenExpireAt))
         return token
@@ -89,7 +92,6 @@ class Session(object):
         rqToken = f'{host}/auth/token'
         rUid = requests.post(rqToken, auth=(agcloud_id, agcloud_key))
         if 200 != rUid.status_code:
-            parseApiError(rUid)
             return False
         responseUid = json.loads(rUid.text)
         token = self.__setToken(responseUid)
@@ -102,7 +104,6 @@ class Session(object):
         rq = f'{host}/auth/token'
         rqRefresh = self.__agent.get(rq)
         if 200 != rqRefresh.status_code:
-            parseApiError(rqRefresh)
             return False
         responseRefresh = json.loads(rqRefresh.text)
         token = self.__setToken(responseRefresh)
@@ -111,55 +112,82 @@ class Session(object):
     def __createSessionAgent(self, token=None):
         """ Create requests session. """
         logging.debug('Creating new requests session')
-        agent=requests.Session()
+        agent = requests.Session()
         agent.headers.update({'user-agent': 'Gomma-Session'})
         if not token:
             token = self.__getToken()
-            if not token:return False
+            if not token:
+                return False
         try:
-            agent.headers.update({'x-uid': token['uid'] })
+            agent.headers.update({'x-uid': token['uid']})
         except Exception:
             logging.error("Invalid token keys", exc_info=True)
-        self.__agent=agent
+        self.__agent = agent
         return agent
 
     def getAgent(self):
         """Retrive API request session."""
         logging.debug('Get request agent')
-        agent=self.__agent
+        agent = self.__agent
         if not agent:
-            agent=self.__createSessionAgent()
-        else:
-            ttl = self.cache.ttl(self.__cacheKey)
-            if ttl < 1:
-                agent=self.__createSessionAgent()
-            elif 1 <= ttl <= 900:
-                refreshedToken=self.__refreshToken()
-                agent = self.__createSessionAgent(refreshedToken)
-            if not agent:
-                logging.error('Unable to create agent!')
-                exit(1)
+            return self.__createSessionAgent()
+        ttl = self.cache.ttl(self.__cacheKey)
+        if ttl < 1:
+            agent = self.__createSessionAgent()
+        elif 1 <= ttl <= 900:
+            refreshedToken = self.__refreshToken()
+            agent = self.__createSessionAgent(refreshedToken)
+        if not agent:
+            logging.error('Unable to create agent!')
+            exit(1)
         return agent
 
+    def response(self, r):
+        """ default response object from requests"""
+        fr = {}
+        logging.debug(
+            f'{r.url} ({r.elapsed}) {r.status_code}')
+        # print(r.raise_for_status())
+        body = r.json() if r.text else None
+        if r.ok:
+            fr['status'] = 'ok'
+            if body:
+                fr = {**fr, **body}
+        else:
+            fr['status'] = 'ko'
+            error = {}
+            if 'title' in body:
+                error['title'] = body['title']
+            if 'type' in body:
+                error['type'] = body['type']
+            if 'errors' in body:
+                error['errors'] = body['errors']
+            fr['error'] = error
+            if r.status_code >= 400 and r.status_code < 500:
+                logging.warning(error)
+            else:
+                logging.error(error)
+        return json.dumps(fr)
 
-def parseApiError(response):
-    """ stampa errori api """
-    logging.debug('Parsing error')
-    status = response.status_code
-    try:
-        problem = json.loads(response.text)
-    except Exception:
-        # Add handlers to the logger
-        logging.error('Not jsonable', exc_info=True)
-        return False
-    msg = f'status {status}'
-    if 'title' in problem:
-        msg+=f" / {problem['title']}"
-    if 'errors' in problem:
-        for k,v in problem['errors'].items():
-            msg+=f'\n\t -{k}:{v}'
-    if status >=400 and status <500:
-        logging.warning(msg)
-    else:
-        logging.error(msg)
-    return msg
+# DEPRECATED
+# def parseApiError(response):
+    # """ stampa errori api """
+    # logging.debug('Parsing error')
+    # status = response.status_code
+    # try:
+    #     problem = json.loads(response.text)
+    # except Exception:
+    #     # Add handlers to the logger
+    #     logging.error('Not jsonable', exc_info=True)
+    #     return False
+    # msg = f'status {status}'
+    # if 'title' in problem:
+    #     msg += f" / {problem['title']}"
+    # if 'errors' in problem:
+    #     for k, v in problem['errors'].items():
+    #         msg += f'\n\t -{k}:{v}'
+    # if status >= 400 and status < 500:
+    #     logging.warning(msg)
+    # else:
+    #     logging.error(msg)
+    # return msg

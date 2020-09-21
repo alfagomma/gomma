@@ -10,6 +10,7 @@ import logging
 
 from gomma.base.core import Base
 
+
 class test():
     """ Test base """
 
@@ -21,7 +22,7 @@ class test():
     def uom(self):
         """unit of measure tests."""
         logging.debug('Test uom')
-        uoms = self.b.getUoms('take=5')
+        uoms = self.b.getUoms()
         logging.info(uoms)
         return True
 
@@ -34,17 +35,22 @@ def main(args):
     logging.debug(f'Init {__file__}')
     t = test(profile_name=args.profile)
     for atr in args.test:
-        if hasattr(t, atr):getattr(t, atr)()
+        if hasattr(t, atr):
+            getattr(t, atr)()
     return
-    
+
+
 def parse_args():
     """Parse the args from main."""
     import argparse
     parser = argparse.ArgumentParser(description='Testing support')
     parser.add_argument("--profile", type=str, help='Use specific profile env')
-    parser.add_argument("-t", "--test", nargs='+', help='What can I do for you?', required=True)
-    parser.add_argument("-v", "--verbose", help="increase output verbosity", action="store_true")
+    parser.add_argument("-t", "--test", nargs='+',
+                        help='What can I do for you?', required=True)
+    parser.add_argument("-v", "--verbose",
+                        help="increase output verbosity", action="store_true")
     return parser.parse_args()
+
 
 if __name__ == '__main__':
     args = parse_args()

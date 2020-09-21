@@ -14,38 +14,33 @@ import json
 import logging
 import time
 
-from gomma.session import Session, parseApiError
+from gomma.session import Session
 
 
 class Graph(object):
     """
     Graph Open Data core class .
     """
+
     def __init__(self, profile_name=None):
         """
         Initialize main class with this and that.
         """
         logging.debug('Init Graph SDK')
         s = Session(profile_name)
-        rqagent =  s.createAgent()
-        if not rqagent:
-            logging.error('Unable to start base core without valid session.')
-            exit(1)
-        host=s.config.get('aggraph_host')
-        self.host = host
-        self.agent = rqagent
+        host = s.config.get('aggraph_host')
+        self.host = f'{host}/element'
+        self.s = s
 
-    def get_language(self, language_id:int, params=None):
+    def get_language(self, language_id: int, params=None):
         """
         Read single language
         """
         logging.debug(f'Get language {language_id}')
         rq = f'{self.host}/language/{language_id}'
-        r = self.agent.get(rq, params=params)
-        if 200 != r.status_code:
-            return False
-        language = json.loads(r.text)
-        return language
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
 
     def read_all_language(self, query=None):
         """
@@ -53,8 +48,6 @@ class Graph(object):
         """
         logging.debug('Getting all the languages')
         rq = '%s/language' % (self.host)
-        r = self.agent.get(rq, params=query)
-        if 200 != r.status_code:
-            return False
-        languages = json.loads(r.text)
-        return languages        
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=query)
+        return self.s.response(r)

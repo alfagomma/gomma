@@ -13,35 +13,34 @@ __date__ = "2019-05-22"
 import json
 import logging
 
-from gomma.session import Session, parseApiError
+from gomma.session import Session
+
 
 class H2o(object):
     """
     H2o core class .
     """
+
     def __init__(self, profile_name=None):
         """
         Initialize main class.
         """
         logging.info('Init H2o SDK')
         s = Session(profile_name)
-        host=s.config.get('agapi_host')
+        host = s.config.get('agapi_host')
         self.host = f'{host}/h2o'
         self.s = s
 
-    #customer
+    # customer
     def getCustomers(self, query=None):
         """
         Read all customers.
         """
         logging.info('Getting all customers')
         rq = '%s/customer' % (self.host)
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.get(rq, params=query)
-        if 200 != r.status_code:
-            return False
-        customer = json.loads(r.text)
-        return customer
+        return self.s.response(r)
 
     def createCustomer(self, payload):
         """
@@ -50,28 +49,19 @@ class H2o(object):
         logging.info('Init creating customer...')
         print(payload)
         rq = f'{self.host}/customer'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
-        if 201 != r.status_code:
-            parseApiError(r)
-            return False
-        customer = json.loads(r.text)
-        logging.info('Customer %s created' % customer['data']['id'])
-        return customer
+        return self.s.response(r)
 
-    def getCustomer(self, customer_id:int):
+    def getCustomer(self, customer_id: int):
         """
         Get customer by id.
         """
-        logging.info(f'Reading customer {customer_id}...')        
+        logging.info(f'Reading customer {customer_id}...')
         rq = f'{self.host}/customer/{customer_id}'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.get(rq)
-        if 200 != r.status_code:
-            parseApiError(r)
-            return False
-        customer = json.loads(r.text)
-        return customer
+        return self.s.response(r)
 
     def getCustomerFromErp(self, customer_id, erp_id):
         """
@@ -80,18 +70,13 @@ class H2o(object):
         logging.info(f'Reading customer {customer_id} for erp {erp_id}')
         rq = f'{self.host}/customer/findByErp'
         payload = {
-            'erp_id': erp_id, 
-            'ext_id': customer_id 
-            }
-        agent=self.s.getAgent()
+            'erp_id': erp_id,
+            'ext_id': customer_id
+        }
+        agent = self.s.getAgent()
         r = agent.get(rq, params=payload)
-        if 200 != r.status_code:
-            parseApiError(r)
-            return False
-        customer = json.loads(r.text)
-        logging.info('Find customer %s' % customer['data']['id'])
-        return customer
-    
+        return self.s.response(r)
+
     def getCustomerFromTax(self, code):
         """
         Read customer from tax code.
@@ -100,165 +85,119 @@ class H2o(object):
         rq = f'{self.host}/customer/findByTax'
         payload = {
             'code': code
-            }
-        agent=self.s.getAgent()
+        }
+        agent = self.s.getAgent()
         r = agent.get(rq, params=payload)
-        if 200 != r.status_code:
-            parseApiError(r)
-            return False
-        customer = json.loads(r.text)
-        logging.info('Find customer %s' % customer['data']['id'])
-        return customer
+        return self.s.response(r)
 
-    def updateCustomer(self, customer_id:int, payload):
+    def updateCustomer(self, customer_id: int, payload):
         """
         Update customer data.
         """
         logging.info(f'Updating customer {customer_id}...')
         rq = f'{self.host}/customer/{customer_id}'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
-        if 200 != r.status_code:
-            parseApiError(r)
-            return False
-        customer = json.loads(r.text)
-        logging.info(f'Updated customer {customer_id}')
-        return customer
+        return self.s.response(r)
 
-    def createCustomerXerp(self, customer_id:int, payload):
+    def createCustomerXerp(self, customer_id: int, payload):
         """
         Update customer ERP Xrefs.
         """
         logging.info(f'Init creating customer {customer_id} ERP xref ...')
         rq = f'{self.host}/customer/{customer_id}/xerp'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
-        if 201 != r.status_code:
-            parseApiError(r)
-            return False
-        resp = json.loads(r.text)
-        return resp            
+        return self.s.response(r)
 
-    #customer address
-    def createCustomerAddress(self, customer_id:int, payload):
+    # customer address
+    def createCustomerAddress(self, customer_id: int, payload):
         """
         Create new customer address
         """
         logging.info(f'Creating customer {customer_id} address')
         rq = f'{self.host}/customer/{customer_id}/address'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
-        if 201 != r.status_code:
-            parseApiError(r)
-            return False
-        address = json.loads(r.text)
-        return address
+        return self.s.response(r)
 
-    def updateCustomerAddress(self, customer_id:int, address_id:int, payload):
+    def updateCustomerAddress(self, customer_id: int, address_id: int, payload):
         """
         Update customer address.
         """
         logging.info(f'Init updating {customer_id} address {address_id} ...')
         rq = f'{self.host}/customer/{customer_id}/address/{address_id}'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
-        if 200 != r.status_code:
-            parseApiError(r)
-            return False
-        address = json.loads(r.text)
-        return address
-    
-    def getCustomerAddresses(self, customer_id:int, query=None):
+        return self.s.response(r)
+
+    def getCustomerAddresses(self, customer_id: int, query=None):
         """
         List customer addresses.
         """
         logging.info(f'Getting all customer {customer_id} addresses')
         rq = '{self.host}/customer/{customer_id}/address'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.get(rq, params=query)
-        if 200 != r.status_code:
-            return False
-        addresses = json.loads(r.text)
-        return addresses
+        return self.s.response(r)
 
-    def getCustomerAddress(self, customer_id:int, address_id:int, params=None):
+    def getCustomerAddress(self, customer_id: int, address_id: int, params=None):
         """
         Get customer address.
         """
         logging.info(f'Get customer {customer_id} address {address_id}')
         rq = f'{self.host}/customer/{customer_id}/address/{address_id}'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.get(rq, params=params)
-        if 200 != r.status_code:
-            return False
-        address = json.loads(r.text)
-        return address
+        return self.s.response(r)
 
-    def getCustomerAddressFromExtId(self, customer_id:int, ext_id:str, query=None):
+    def getCustomerAddressFromExtId(self, customer_id: int, ext_id: str, query=None):
         """
         List customer addresses.
         """
         logging.info(f'Search customer {customer_id} address ext_id {ext_id}.')
-        payload ={
-            'ext_id' : ext_id
+        payload = {
+            'ext_id': ext_id
         }
         if query:
             new_payload = dict(item.split("=") for item in query.split('&'))
-            payload = {**payload, **new_payload}        
+            payload = {**payload, **new_payload}
         rq = f'{self.host}/customer/{customer_id}/address/findByExtId'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.get(rq, params=payload)
-        if 200 != r.status_code:
-            parseApiError(r)
-            return False
-        address= json.loads(r.text)
-        return address
-        
-    #competitor
+        return self.s.response(r)
+
+    # competitor
     def createCompetitor(self, payload):
         """
         Create new competitor.
         """
         logging.info('Init creating competitor...')
         rq = f'{self.host}/competitor'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
-        if 201 != r.status_code:
-            parseApiError(r)
-            return False
-        competitor = json.loads(r.text)
-        logging.info('Competitor %s created' % competitor['data']['id'])
-        return competitor
+        return self.s.response(r)
 
-    def getCompetitor(self, competitor_id:int):
+    def getCompetitor(self, competitor_id: int):
         """
         Get competitor by id.
         """
-        logging.info(f'Reading competitor {competitor_id}...')        
+        logging.info(f'Reading competitor {competitor_id}...')
         rq = f'{self.host}/competitor/{competitor_id}'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.get(rq)
-        if 200 != r.status_code:
-            parseApiError(r)
-            return False
-        competitor = json.loads(r.text)
-        return competitor    
-    
-    #order
+        return self.s.response(r)
+
+    # order
     def createOrder(self, payload):
         """
         Create new order.
         """
         logging.info('Creating order %s' % payload)
         rq = f'{self.host}/order'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
-        if 201 != r.status_code:
-            parseApiError(r)
-            return False
-        order = json.loads(r.text)
-        logging.info('Order %s created' % order['data']['id'])
-        return order
+        return self.s.response(r)
 
     def getOrders(self, query=None):
         """
@@ -266,89 +205,67 @@ class H2o(object):
         """
         logging.info('Getting orders.')
         rq = f'{self.host}/order'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.get(rq, params=query)
-        if 200 != r.status_code:
-            return False
-        orders = json.loads(r.text)
-        return orders
+        return self.s.response(r)
 
-    def getOrder(self, order_id:int):
+    def getOrder(self, order_id: int):
         """
         Get order by id
         """
         logging.info(f'Reading order {order_id}..')
         rq = f'{self.host}/order/{order_id}'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.get(rq)
-        if 200 != r.status_code:
-            parseApiError(r)
-            return False
-        order = json.loads(r.text)
-        return order        
+        return self.s.response(r)
 
-    def getOrderFromErp(self, erp_id:int, ext_id):
+    def getOrderFromErp(self, erp_id: int, ext_id):
         """
         Read order from erp external ID.
         """
         logging.info(f'Reading order {ext_id} for erp {erp_id}')
         rq = f'{self.host}/order/findByErp'
         payload = {
-            'erp_id': erp_id, 
-            'ext_id': ext_id 
-            }
-        agent=self.s.getAgent()
+            'erp_id': erp_id,
+            'ext_id': ext_id
+        }
+        agent = self.s.getAgent()
         r = agent.get(rq, params=payload)
-        if 200 != r.status_code:
-            parseApiError(r)
-            return False
-        order = json.loads(r.text)
-        logging.info('Find order %s' % order['data']['id'])
-        return order
+        return self.s.response(r)
 
-    def createOrderDetail(self, order_id:int, payload):
+    def createOrderDetail(self, order_id: int, payload):
         """
         Create order detail.
         """
         logging.info('Creating order detail')
         rq = f'{self.host}/order/{order_id}/detail'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
-        if 201 != r.status_code:
-            parseApiError(r)
-            return False
-        order = json.loads(r.text)
-        return order
+        return self.s.response(r)
 
-    #order type
+    # order type
     def getOrderTypes(self, query=None):
         """
         Read all order types.
         """
         logging.info('Getting order types.')
         rq = f'{self.host}/order/type'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.get(rq, params=query)
-        if 200 != r.status_code:
-            return False
-        orderTypes = json.loads(r.text)
-        return orderTypes
+        return self.s.response(r)
 
-    def getOrderTypeFromName(self, name:str):
+    def getOrderTypeFromName(self, name: str):
         """
         Get order type by name.
         """
         logging.info('Getting order types.')
         rq = f'{self.host}/order/type/findByName'
-        payload={
-            'name':name
+        payload = {
+            'name': name
         }
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.get(rq, params=payload)
-        if 200 != r.status_code:
-            return False
-        orderType = json.loads(r.text)
-        return orderType        
+        return self.s.response(r)
 
     def createOrderType(self, payload):
         """
@@ -356,11 +273,6 @@ class H2o(object):
         """
         logging.info('Creating new order type.')
         rq = f'{self.host}/order/type'
-        agent=self.s.getAgent()
+        agent = self.s.getAgent()
         r = agent.get(rq, json=payload)
-        if 201 != r.status_code:
-            parseApiError(r)
-            return False
-        orderType = json.loads(r.text)
-        logging.info(f"Order type {orderType['data']['id']} created")
-        return orderType        
+        return self.s.response(r)
