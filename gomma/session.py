@@ -17,6 +17,9 @@ import requests
 from redis import Redis
 
 
+logging.getLogger(__name__).addHandler(logging.NullHandler())
+
+
 class Session(object):
     """
     Gomma Session class .
@@ -164,7 +167,7 @@ class Session(object):
                 error['errors'] = body['errors']
             fr['error'] = error
             if r.status_code >= 400 and r.status_code < 500:
-                logging.warning(error)
+                logging.debug(error)
             else:
                 logging.error(error)
         return json.dumps(fr)
