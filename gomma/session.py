@@ -17,7 +17,7 @@ import requests
 from redis import Redis
 
 
-logging.getLogger(__name__).addHandler(logging.NullHandler())
+logging.getLogger(__name__)
 
 
 class Session(object):
