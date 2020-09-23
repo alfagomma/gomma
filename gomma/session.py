@@ -17,9 +17,6 @@ import requests
 from redis import Redis
 
 
-logging.getLogger(__name__)
-
-
 class Session(object):
     """
     Gomma Session class .
