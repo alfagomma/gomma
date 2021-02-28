@@ -168,26 +168,3 @@ class Session(object):
             else:
                 logging.error(error)
         return json.dumps(fr)
-
-# DEPRECATED
-# def parseApiError(response):
-    # """ stampa errori api """
-    # logging.debug('Parsing error')
-    # status = response.status_code
-    # try:
-    #     problem = json.loads(response.text)
-    # except Exception:
-    #     # Add handlers to the logger
-    #     logging.error('Not jsonable', exc_info=True)
-    #     return False
-    # msg = f'status {status}'
-    # if 'title' in problem:
-    #     msg += f" / {problem['title']}"
-    # if 'errors' in problem:
-    #     for k, v in problem['errors'].items():
-    #         msg += f'\n\t -{k}:{v}'
-    # if status >= 400 and status < 500:
-    #     logging.warning(msg)
-    # else:
-    #     logging.error(msg)
-    # return msg

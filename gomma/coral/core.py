@@ -131,3 +131,56 @@ class Coral(object):
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
         return self.s.response(r)
+
+    # warehouse
+    def listWarehouse(self, query=None):
+        """
+        Read all warehouse
+        """
+        logging.info('Reading all warehouses')
+        rq = f'{self.host}/warehouse'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=query)
+        return self.s.response(r)
+
+    def getWarehouse(self, warehouse_id: int, params=None):
+        """Get warehouse details"""
+        logging.info(f'Get warehouse {warehouse_id}')
+        rq = f'{self.host}/warehouse/{warehouse_id}'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
+    def createWarehouse(self, payload):
+        """ 
+        Create new warehouse
+        """
+        logging.info(f'Creating new warehouse {payload}')
+        rq = f'{self.host}/warehouse'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def updateWarehouse(self, warehouse_id: int, payload):
+        """ 
+        Create new warehouse
+        """
+        logging.info(f'Updateing warehouse {warehouse_id} - {payload}')
+        rq = f'{self.host}/warehouse/{warehouse_id}'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def getWarehouseFromName(self, name: str, params=None):
+        """read warehouse from name"""
+        logging.info(f'Search warehouse from {name}')
+        payload = {
+            'name': name
+        }
+        if params:
+            new_payload = dict(item.split("=") for item in params.split('&'))
+            payload = {**payload, **new_payload}
+        rq = f'{self.host}/warehouse/findByName'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=payload)
+        return self.s.response(r)
