@@ -63,17 +63,18 @@ class Element(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
-    def getItemFromExt_id(self, ext_id: str, params={}):
+    def getItemFromErp(self, erp_id: int, erp_code: str, params={}):
         """
-        Get item from ext_id.
+        Get item from erp.
         """
-        logging.info(f'Search item ext_id {ext_id}.')
+        logging.info(f'Search item from erp {erp_id} code {erp_code}.')
         payload = {
-            'ext_id': ext_id
+            'erp': erp_id,
+            'code': erp_code
         }
         if params:
             payload.update(params)
-        rq = f'{self.host}/item/findByExtId'
+        rq = f'{self.host}/item/findByErp'
         agent = self.s.getAgent()
         r = agent.get(rq, params=payload)
         return self.s.response(r)
@@ -94,18 +95,28 @@ class Element(object):
         r = agent.get(rq, params=payload)
         return self.s.response(r)
 
-    def getItemFromErpId(self, erp_id: int, ext_id: str):
+    # def getItemFromErpId(self, erp_id: int, ext_id: str):
+    #     """
+    #     Get item from ext_id of Erp.
+    #     """
+    #     logging.info(f'Search item ext_id {ext_id} for erp {erp_id}.')
+    #     rq = '%s/item/findByErpExtId' % (self.host)
+    #     payload = {
+    #         'erp_id': erp_id,
+    #         'ext_id': ext_id
+    #     }
+    #     agent = self.s.getAgent()
+    #     r = agent.get(rq, params=payload)
+    #     return self.s.response(r)
+
+    def attachItemErp(self, item_id: int, payload):
         """
-        Get item from ext_id of Erp.
+        Attach Item Erp references.
         """
-        logging.info(f'Search item ext_id {ext_id} for erp {erp_id}.')
-        rq = '%s/item/findByErpExtId' % (self.host)
-        payload = {
-            'erp_id': erp_id,
-            'ext_id': ext_id
-        }
+        logging.info(f'Attaching item {item_id} erp with {payload}')
+        rq = f'{self.host}/item/{item_id}/erp'
         agent = self.s.getAgent()
-        r = agent.get(rq, params=payload)
+        r = agent.post(rq, json=payload)
         return self.s.response(r)
 
     def updateItem(self, item_id: int, payload):
@@ -133,7 +144,7 @@ class Element(object):
         Create new item attributes.
         """
         logging.info(f'Creating item {item_id} attributes {payload}')
-        rq = '%s/item/%s/attribute' % (self.host, item_id)
+        rq = f'{self.host}/item/{item_id}/attribute'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
         return self.s.response(r)
