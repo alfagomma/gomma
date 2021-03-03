@@ -15,7 +15,7 @@ tests/.coverage
 *.egg-info
 
 # vitualenv
-Pipfile.lock
+
 
 # Common virtualenv names
 venv
