@@ -20,7 +20,7 @@ def get_version():
 
 setup(
     name='gomma',
-    version="4.0.1",
+    version="4.1.1",
     description='AGCloud SKD for Python',
     long_description=open('README.rst').read(),
     author='Agenziasmart',

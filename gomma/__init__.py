@@ -12,4 +12,4 @@
 # language governing permissions and limitations under the License.
 
 __author__ = 'AgenziaSmart'
-__version__ = '4.0.1'
+__version__ = '4.1.1'

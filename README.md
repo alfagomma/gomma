@@ -1,5 +1,10 @@
 # Official AGCloud SDK for Python v4-rc
 
+[![Latest Version](https://img.shields.io/github/release/alfagomma/gomma.svg?style=flat-square)](https://github.com/alfagomma/gomma/releases)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/alfagomma/gomma/blob/master/LICENSE)
+[![Quality Score](https://img.shields.io/scrutinizer/g/alfagomma/gomma.svg?style=flat-square)](https://scrutinizer-ci.com/g/alfagomma/gomma)
+[![Total Downloads](https://img.shields.io/packagist/dt/alfagomma/gomma.svg?style=flat-square)](https://packagist.org/packages/league/gomma)
+
 Gomma is the Alfagomma Cloud (AGCloud) Software Development Kit (SDK) for Python, which allows Python developers to write software that makes use of services like Element, H2o. You can find the latest, most up to date, documentation at our doc site, including a list of services that are supported.
 
 ## Quick Start

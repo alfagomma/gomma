@@ -95,20 +95,6 @@ class Element(object):
         r = agent.get(rq, params=payload)
         return self.s.response(r)
 
-    # def getItemFromErpId(self, erp_id: int, ext_id: str):
-    #     """
-    #     Get item from ext_id of Erp.
-    #     """
-    #     logging.info(f'Search item ext_id {ext_id} for erp {erp_id}.')
-    #     rq = '%s/item/findByErpExtId' % (self.host)
-    #     payload = {
-    #         'erp_id': erp_id,
-    #         'ext_id': ext_id
-    #     }
-    #     agent = self.s.getAgent()
-    #     r = agent.get(rq, params=payload)
-    #     return self.s.response(r)
-
     def attachItemErp(self, item_id: int, payload):
         """
         Attach Item Erp references.
@@ -227,31 +213,6 @@ class Element(object):
         agent = self.s.getAgent()
         r = agent.delete(rq)
         return self.s.response(r)
-
-    # def itemAddWarehouse(self, item_id: int, payload):
-    #     """ attach warehouse to the item"""
-    #     logging.info(f'Add warehouse at {item_id} - {payload}')
-    #     rq = f'{self.host}/item/{item_id}/warehouse'
-    #     agent = self.s.getAgent()
-    #     r = agent.post(rq, json=payload)
-    #     return self.s.response(r)
-
-    # def itemRemoveWarehouse(self, item_id: int, warehouse_id: int):
-    #     """ attach warehouse to the item"""
-    #     logging.info(f'Remove warehouse {warehouse_id} @ item {item_id}')
-    #     rq = f'{self.host}/item/{item_id}/warehouse/{warehouse_id}'
-    #     agent = self.s.getAgent()
-    #     r = agent.delete(rq)
-    #     return self.s.response(r)
-
-    # def itemPatchWarehouse(self, item_id: int, warehouse_id: int, payload):
-    #     """ attach warehouse to the item"""
-    #     logging.info(
-    #         f'Patching item {item_id}@warehouse {warehouse_id} - {payload}')
-    #     rq = f'{self.host}/item/{item_id}/warehouse/{warehouse_id}'
-    #     agent = self.s.getAgent()
-    #     r = agent.patch(rq, json=payload)
-    #     return self.s.response(r)
 
     # attribute
     def createAttribute(self, payload):
