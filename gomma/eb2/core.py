@@ -7,12 +7,10 @@ Eb2 SDK
 """
 
 __author__ = "Davide Pellegrino"
-__version__ = "1.1.3"
-__date__ = "2020-01-20"
+__version__ = "1.2.1"
+__date__ = "2021-03-07"
 
-import json
 import logging
-import time
 
 from gomma.session import Session
 
@@ -33,24 +31,32 @@ class Eb2(object):
         self.s = s
 
     # company
-    def getCompany(self, company_id: int, params=None):
+    def getCompany(self, company_id: int, params={}):
         """
         Legge un company dal suo id.
         """
         logging.info(f'Get company {company_id}')
         rq = f'{self.host}/company/{company_id}'
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=params)
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
-    def getCompanies(self, query=None):
+    def getCompanies(self, params={}):
         """
         Prende tutti gli companies.
         """
         logging.info('Getting all the companies')
         rq = f'{self.host}/company'
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=query)
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
     def createCompany(self, payload):
@@ -59,25 +65,30 @@ class Eb2(object):
         """
         logging.info(f'Creating company {payload}')
         rq = f'{self.host}/company'
-        agent = self.s.getAgent()
-        r = agent.post(rq, json=payload)
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
-    def getCompanyFromExt_id(self, ext_id: str, params=None):
+    def getCompanyFromCode(self, code: str, params={}):
         """
-        Get company from ext_id.
+        Get company from code.
         """
-        logging.info(f'Search company ext_id {ext_id}.')
-        payload = {
-            'ext_id': ext_id
+        logging.info(f'Search company code {code}.')
+        query = {
+            'code': code
         }
-        if params:
-            new_payload = dict(company.split("=")
-                               for company in params.split('&'))
-            payload = {**payload, **new_payload}
-        rq = f'{self.host}/company/findByExtId'
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=payload)
+        payload = {**params, **query}
+        rq = f'{self.host}/company/findByCode'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
     def updateCompany(self, company_id: int, payload):
@@ -86,6 +97,10 @@ class Eb2(object):
         """
         logging.info(f'Updating company {company_id} with {payload}')
         rq = f'{self.host}/company/{company_id}'
-        agent = self.s.getAgent()
-        r = agent.post(rq, json=payload)
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)

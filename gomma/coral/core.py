@@ -7,12 +7,10 @@ Coral SDK
 """
 
 __author__ = "Davide Pellegrino"
-__version__ = "1.1.1"
-__date__ = "2020-09-08"
+__version__ = "1.2.1"
+__date__ = "2021-03-05"
 
-import json
 import logging
-import time
 
 from gomma.session import Session
 
@@ -33,24 +31,32 @@ class Coral(object):
         self.s = s
 
     # supplier
-    def getSupplier(self, supplier_id: int, params=None):
+    def getSupplier(self, supplier_id: int, params={}):
         """
         Read single supplier.
         """
         logging.info(f'Get supplier {supplier_id}')
         rq = f'{self.host}/supplier/{supplier_id}'
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=params)
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
-    def getSuppliers(self, query=None):
+    def listSupplier(self, params=None):
         """
         Read all suppliers.
         """
         logging.info('Getting all the suppliers')
         rq = f'{self.host}/supplier'
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=query)
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
     def createSupplier(self, payload):
@@ -59,25 +65,31 @@ class Coral(object):
         """
         logging.info(f'Creating supplier {payload}')
         rq = f'{self.host}/supplier'
-        agent = self.s.getAgent()
-        r = agent.post(rq, json=payload)
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
-    def getSupplierFromExt_id(self, ext_id: int, params=None):
+    def getSupplierFromErp(self, erp_id: int, code: str, params={}):
         """
-        Get supplier from ext_id.
+        Get supplier from erp.
         """
-        logging.info(f'Search supplier ext_id {ext_id}.')
-        payload = {
-            'ext_id': ext_id
+        logging.info(f'Search supplier from erp {erp_id} code {code}.')
+        query = {
+            'erp': erp_id,
+            'code': code
         }
-        if params:
-            new_payload = dict(supplier.split("=")
-                               for supplier in params.split('&'))
-            payload = {**payload, **new_payload}
-        rq = f'{self.host}/supplier/findByExtId'
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=payload)
+        payload = {**params, **query}
+        rq = f'{self.host}/supplier/findByErp'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
     def updateSupplier(self, supplier_id: int, payload):
@@ -86,69 +98,205 @@ class Coral(object):
         """
         logging.info(f'Updating supplier {supplier_id} with {payload}')
         rq = f'{self.host}/supplier/{supplier_id}'
-        agent = self.s.getAgent()
-        r = agent.post(rq, json=payload)
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def patchSupplier(self, supplier_id: int, payload):
+        """
+        Patch supplier data.
+        """
+        logging.info(f'Patching supplier {supplier_id} with {payload}')
+        rq = f'{self.host}/supplier/{supplier_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.patch(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def listSupplierCompanies(self, supplier_id: int, params={}):
+        """
+        Read supplier companies.
+        """
+        logging.info(f'Reading supplier {supplier_id} companies')
+        rq = f'{self.host}/supplier/{supplier_id}/company'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def supplierAttachCompany(self, supplier_id: int, company_id: int):
+        """
+        Attach company to supplier.
+        """
+        logging.info(
+            f'Attaching company {company_id} to supplier {supplier_id}.')
+        rq = f'{self.host}/supplier/{supplier_id}/company'
+        payload = {
+            'company_id': company_id
+        }
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def supplierDetachCompany(self, supplier_id: int, company_id: int):
+        """
+        Detach company to supplier.
+        """
+        logging.info(
+            f'Detaching company {company_id} to supplier {supplier_id}.')
+        rq = f'{self.host}/supplier/{supplier_id}/company/{company_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.delete(rq)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def listSupplierErps(self, supplier_id: int, params={}):
+        """
+        Read supplier erps.
+        """
+        logging.info(f'Reading supplier {supplier_id} erps')
+        rq = f'{self.host}/supplier/{supplier_id}/erp'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def supplierAttachErp(self, supplier_id: int, erp_id: int, code: str):
+        """
+        Attach erp to supplier.
+        """
+        logging.info(
+            f'Attaching erp {erp_id} code {code} to supplier {supplier_id}.')
+        rq = f'{self.host}/supplier/{supplier_id}/erp'
+        payload = {
+            'erp_id': erp_id,
+            'code': code
+        }
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def supplierDetachErp(self, supplier_id: int, erp_id: int):
+        """
+        Detach erp to supplier.
+        """
+        logging.info(f'Detaching erp {erp_id} to supplier {supplier_id}.')
+        rq = f'{self.host}/supplier/{supplier_id}/erp/{erp_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.delete(rq)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
     # category
 
-    def getCategory(self, category_id: int, params=None):
+    def getSupplierCategory(self, category_id: int, params={}):
         """
         Read single category.
         """
-        logging.info(f'Get category {category_id}')
-        rq = f'{self.host}/category/{category_id}'
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=params)
+        logging.info(f'Get supplier category {category_id}')
+        rq = f'{self.host}/supplier/category/{category_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
-    def getCategories(self, query=None):
+    def listSupplierCategory(self, params={}):
         """
-        Read all category.
+        Read all supplier categories.
         """
         logging.info('Getting all the categories')
-        rq = f'{self.host}/supplier'
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=query)
+        rq = f'{self.host}/supplier/category'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
-    def createCategory(self, payload):
+    def createSupplierCategory(self, payload):
         """
-        Create new category.
+        Create new supplier category.
         """
-        logging.info(f'Creating category {payload}')
-        rq = f'{self.host}/category'
-        agent = self.s.getAgent()
-        r = agent.post(rq, json=payload)
+        logging.info(f'Creating supplier category {payload}')
+        rq = f'{self.host}/supplier/category'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
-    def updateCategory(self, category_id: int, payload):
+    def updateSupplierCategory(self, category_id: int, payload):
         """
-        Update category.
+        Update supplier category.
         """
         logging.info(f'Updating category {category_id} with {payload}')
-        rq = f'{self.host}/category/{category_id}'
-        agent = self.s.getAgent()
-        r = agent.post(rq, json=payload)
+        rq = f'{self.host}/supplier/category/{category_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
     # warehouse
-    def listWarehouse(self, query=None):
+    def listWarehouses(self, params={}):
         """
-        Read all warehouse
+        Read all warehouses.
         """
         logging.info('Reading all warehouses')
         rq = f'{self.host}/warehouse'
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=query)
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
-    def getWarehouse(self, warehouse_id: int, params=None):
-        """Get warehouse details"""
-        logging.info(f'Get warehouse {warehouse_id}')
+    def getWarehouse(self, warehouse_id: int, params={}):
+        """Get warehouse details."""
+        logging.info(f'Get warehouse {warehouse_id} with params {params}')
         rq = f'{self.host}/warehouse/{warehouse_id}'
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=params)
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
     def createWarehouse(self, payload):
@@ -157,30 +305,40 @@ class Coral(object):
         """
         logging.info(f'Creating new warehouse {payload}')
         rq = f'{self.host}/warehouse'
-        agent = self.s.getAgent()
-        r = agent.post(rq, json=payload)
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
     def updateWarehouse(self, warehouse_id: int, payload):
         """ 
-        Create new warehouse
+        Update warehouse.
         """
         logging.info(f'Updateing warehouse {warehouse_id} - {payload}')
         rq = f'{self.host}/warehouse/{warehouse_id}'
-        agent = self.s.getAgent()
-        r = agent.post(rq, json=payload)
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
 
-    def getWarehouseFromName(self, name: str, params=None):
-        """read warehouse from name"""
-        logging.info(f'Search warehouse from {name}')
-        payload = {
+    def getWarehouseFromName(self, name: str, params={}):
+        """read warehouse from name."""
+        logging.info(f'GEt warehouse from {name}')
+        query = {
             'name': name
         }
-        if params:
-            new_payload = dict(item.split("=") for item in params.split('&'))
-            payload = {**payload, **new_payload}
+        payload = {**params, **query}
         rq = f'{self.host}/warehouse/findByName'
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=payload)
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
