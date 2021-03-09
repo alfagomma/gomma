@@ -20,6 +20,7 @@ class Session(object):
     Session manager.
     """
 
+    __currentAgent = False
     __cacheKey = 'ag:gomma'
 
     def __init__(self, profile_name=None):
@@ -27,14 +28,14 @@ class Session(object):
         Initialize main class with this and that.
         """
         profile_name = profile_name if profile_name else 'default'
-        logging.info(f'init gomma session -p {profile_name}')
+        logging.info(f'Init Gomma session -p {profile_name}')
         self.__initProfileConfig(profile_name)
         self.__initRedisInstance()
 
     def __initProfileConfig(self, profile_name):
         """ load profile conf"""
         import configparser
-        logging.info(f'Init {profile_name} profile..')
+        logging.info(f'Loading profile {profile_name}')
         # Config
         config_path = os.path.expanduser('~/.agcloud/config')
         cp = configparser.ConfigParser()
@@ -56,7 +57,7 @@ class Session(object):
     def __initRedisInstance(self):
         """init redis instance. """
         from redis import Redis
-        logging.info('Setting redis cache instance...')
+        logging.info('Init redis cache instance...')
         redis_host = self.config.get('redis_host')
         redis_pass = self.__credentials.get('redis_password')
         try:
@@ -137,7 +138,8 @@ class Session(object):
     def getAgent(self, csrf=None):
         """Retrive API request session."""
         logging.info('Get request agent')
-        if hasattr(self, '__currentAgent'):
+        if self.__currentAgent:
+            logging.debug('Self HA currentagent')
             ttl = self.redis.ttl(self.__cacheKey)
             if ttl < 2:
                 logging.debug('Invalid cache key')
@@ -148,6 +150,7 @@ class Session(object):
             else:
                 agent = self.__currentAgent
         else:
+            logging.debug('self NON HA current agent')
             agent = self.__createSessionAgent()
         if not agent:
             raise Exception('Unknow GOMMA Agent!')
