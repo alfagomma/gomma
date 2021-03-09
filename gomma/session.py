@@ -3,36 +3,38 @@
 # -*- coding: utf-8 -*-
 
 """
-Session
+GOMMA SDK for AGCloud
 """
 
-import configparser
 import json
 import logging
 import os
 import time
 from sys import exit
-
 import requests
-from redis import Redis
 
 
 class Session(object):
     """
-    Gomma Session class .
+    GOMMA AGCloud SDK
+    Session manager.
     """
-    config = False
-    __agent = False
-    __credentials = False
+
     __cacheKey = 'ag:gomma'
 
     def __init__(self, profile_name=None):
         """
         Initialize main class with this and that.
         """
-        if not profile_name:
-            profile_name = 'default'
-        logging.debug(f'Init gomma session with {profile_name} profile.')
+        profile_name = profile_name if profile_name else 'default'
+        logging.info(f'init gomma session -p {profile_name}')
+        self.__initProfileConfig(profile_name)
+        self.__initRedisInstance()
+
+    def __initProfileConfig(self, profile_name):
+        """ load profile conf"""
+        import configparser
+        logging.info(f'Init {profile_name} profile..')
         # Config
         config_path = os.path.expanduser('~/.agcloud/config')
         cp = configparser.ConfigParser()
@@ -41,7 +43,6 @@ class Session(object):
             logging.error(f'Unknow {profile_name} configs!')
             exit(1)
         self.config = cp[profile_name]
-        # #hosts
         # Credentials
         credentials_path = os.path.expanduser('~/.agcloud/credentials')
         ccp = configparser.ConfigParser()
@@ -50,22 +51,27 @@ class Session(object):
             logging.error(f'Unknow {profile_name} credentials!')
             exit(1)
         self.__credentials = ccp[profile_name]
-        # cache
-        self.__setCache()
+        return
 
-    def __setCache(self):
-        """ set cache """
-        logging.debug('Setting redis cache...')
-        redis_host = self.config.get('redis_host', '127.0.0.1')
-        redis_pass = self.__credentials.get('redis_password', None)
-        self.cache = Redis(
-            host=redis_host, password=redis_pass, decode_responses=True)
+    def __initRedisInstance(self):
+        """init redis instance. """
+        from redis import Redis
+        logging.info('Setting redis cache instance...')
+        redis_host = self.config.get('redis_host')
+        redis_pass = self.__credentials.get('redis_password')
+        try:
+            redis_instance = Redis(
+                host=redis_host, password=redis_pass, decode_responses=True)
+        except:
+            logging.error('Unable to create redis instance!!')
+            return False
+        self.redis = redis_instance
         return True
 
     def __getToken(self):
         """ Read session token. If not exists, it creates it. """
         logging.debug('Init reading token..')
-        token = self.cache.hgetall(self.__cacheKey)
+        token = self.redis.hgetall(self.__cacheKey)
         if not token:
             token = self.__createToken()
         return token
@@ -79,8 +85,8 @@ class Session(object):
             'uid': uid
         }
         tokenExpireAt = int(time.time()) + expire_in
-        self.cache.hmset(self.__cacheKey, token)
-        self.cache.expireat(self.__cacheKey, int(tokenExpireAt))
+        self.redis.hmset(self.__cacheKey, token)
+        self.redis.expireat(self.__cacheKey, int(tokenExpireAt))
         return token
 
     def __createToken(self):
@@ -102,7 +108,7 @@ class Session(object):
         logging.debug(f'Init refresh token ...')
         host = self.config.get('agapi_host')
         rq = f'{host}/auth/token'
-        rqRefresh = self.__agent.get(rq)
+        rqRefresh = self.__currentAgent.get(rq)
         if 200 != rqRefresh.status_code:
             return False
         responseRefresh = json.loads(rqRefresh.text)
@@ -113,33 +119,38 @@ class Session(object):
         """ Create requests session. """
         logging.debug('Creating new requests session')
         agent = requests.Session()
-        agent.headers.update({'user-agent': 'Gomma-Session'})
+        agent.headers.update(
+            {'user-agent': 'Gomma-sdk', 'Content-Type': 'application/json', 'Accept': 'application/json'})
         if not token:
             token = self.__getToken()
             if not token:
+                logging.error(f'Unable to retrive token')
                 return False
         try:
             agent.headers.update({'x-uid': token['uid']})
         except Exception:
-            logging.error("Invalid token keys", exc_info=True)
-        self.__agent = agent
+            logging.error("Invalid token uid keys")
+            return False
+        self.__currentAgent = agent
         return agent
 
-    def getAgent(self):
+    def getAgent(self, csrf=None):
         """Retrive API request session."""
-        logging.debug('Get request agent')
-        agent = self.__agent
-        if not agent:
-            return self.__createSessionAgent()
-        ttl = self.cache.ttl(self.__cacheKey)
-        if ttl < 1:
+        logging.info('Get request agent')
+        if hasattr(self, '__currentAgent'):
+            ttl = self.redis.ttl(self.__cacheKey)
+            if ttl < 2:
+                logging.debug('Invalid cache key')
+                agent = self.__createSessionAgent()
+            elif 2 <= ttl <= 900:
+                refreshedToken = self.__refreshToken()
+                agent = self.__createSessionAgent(refreshedToken)
+            else:
+                agent = self.__currentAgent
+        else:
             agent = self.__createSessionAgent()
-        elif 1 <= ttl <= 900:
-            refreshedToken = self.__refreshToken()
-            agent = self.__createSessionAgent(refreshedToken)
         if not agent:
-            logging.error('Unable to create agent!')
-            exit(1)
+            raise Exception('Unknow GOMMA Agent!')
         return agent
 
     def response(self, r):
