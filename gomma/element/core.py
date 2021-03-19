@@ -747,3 +747,15 @@ class Element(object):
             logging.error(f'Failed request {rq}')
             return False
         return self.s.response(r)
+
+    def getLeafItems(self, catalog_id: int, tree_id: int, leaf_id:int, params={}):
+        """ Get catalog tree leaves """
+        logging.info(f'Get catalog {catalog_id} tree {tree_id} leaf {leaf_id} items')
+        rq = f'{self.host}/catalog/{catalog_id}/tree/{tree_id}/leaf/{leaf_id}/item'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
