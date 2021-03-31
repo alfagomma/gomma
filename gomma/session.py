@@ -139,7 +139,7 @@ class Session(object):
         """Retrive API request session."""
         logging.info('Get request agent')
         if self.__currentAgent:
-            logging.debug('Self HA currentagent')
+            logging.debug('Gomma has already setup agent')
             ttl = self.redis.ttl(self.__cacheKey)
             if ttl < 2:
                 logging.debug('Invalid cache key')
@@ -170,13 +170,14 @@ class Session(object):
         else:
             fr['status'] = 'ko'
             error = {}
-            if 'title' in body:
-                error['title'] = body['title']
-            if 'type' in body:
-                error['type'] = body['type']
-            if 'errors' in body:
-                error['errors'] = body['errors']
-            fr['error'] = error
+            if body:
+                if 'title' in body:
+                    error['title'] = body['title']
+                if 'type' in body:
+                    error['type'] = body['type']
+                if 'errors' in body:
+                    error['errors'] = body['errors']
+                fr['error'] = error
             if r.status_code >= 400 and r.status_code < 500:
                 logging.debug(error)
             else:
