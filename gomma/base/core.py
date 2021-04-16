@@ -36,7 +36,7 @@ class Base(object):
         """
         Get ERP data.
         """
-        logging.info(f'Get erp {erp_id}')
+        logging.debug(f'Get erp {erp_id}')
         rq = f'{self.host}/erp/{erp_id}'
         agent = self.s.getAgent()
         r = agent.get(rq, params=params)
@@ -45,7 +45,7 @@ class Base(object):
     # unit of measure
     def getUoms(self, query=None):
         """Get all uoms."""
-        logging.info('Getting all unit of measure...')
+        logging.debug('Getting all unit of measure...')
         rq = f'{self.host}/settings/unitofmeasure'
         agent = self.s.getAgent()
         r = agent.get(rq, params=query)
@@ -55,7 +55,7 @@ class Base(object):
         """
         Leggo uom da id.
         """
-        logging.info(f'Reading family {uom_id}...')
+        logging.debug(f'Reading family {uom_id}...')
         rq = f'{self.host}/settings/unitofmeasure/{uom_id}'
         agent = self.s.getAgent()
         r = agent.get(rq, params=query)
@@ -65,7 +65,7 @@ class Base(object):
         """
         Leggo uom da code.
         """
-        logging.info(f'Reading uom code {code}...')
+        logging.debug(f'Reading uom code {code}...')
         params = {
             'code': code
         }
@@ -80,7 +80,7 @@ class Base(object):
     # Currency
     def getCurrencies(self, query=None):
         """Get all currencies."""
-        logging.info('Getting all unit of measure...')
+        logging.debug('Getting all unit of measure...')
         rq = f'{self.host}/settings/currency'
         agent = self.s.getAgent()
         r = agent.get(rq, params=query)
@@ -90,7 +90,7 @@ class Base(object):
         """
         Leggo uom da id.
         """
-        logging.info(f'Reading currency {currency_id}...')
+        logging.debug(f'Reading currency {currency_id}...')
         rq = f'{self.host}/settings/currency/{currency_id}'
         agent = self.s.getAgent()
         r = agent.get(rq, params=query)
@@ -100,7 +100,7 @@ class Base(object):
         """
         Get currency from code.
         """
-        logging.info(f'Reading currency code {code}...')
+        logging.debug(f'Reading currency code {code}...')
         params = {
             'code': code
         }

@@ -36,7 +36,7 @@ class H2o(object):
         """
         Read all customers.
         """
-        logging.info('Getting all customers')
+        logging.debug('Getting all customers')
         rq = '%s/customer' % (self.host)
         agent = self.s.getAgent()
         r = agent.get(rq, params=query)
@@ -46,7 +46,7 @@ class H2o(object):
         """
         Create new customer.
         """
-        logging.info('Init creating customer...')
+        logging.debug('Init creating customer...')
         print(payload)
         rq = f'{self.host}/customer'
         agent = self.s.getAgent()
@@ -57,7 +57,7 @@ class H2o(object):
         """
         Get customer by id.
         """
-        logging.info(f'Reading customer {customer_id}...')
+        logging.debug(f'Reading customer {customer_id}...')
         rq = f'{self.host}/customer/{customer_id}'
         agent = self.s.getAgent()
         r = agent.get(rq)
@@ -67,7 +67,7 @@ class H2o(object):
         """
         Read customer from erp external ID
         """
-        logging.info(f'Reading customer {customer_id} for erp {erp_id}')
+        logging.debug(f'Reading customer {customer_id} for erp {erp_id}')
         rq = f'{self.host}/customer/findByErp'
         payload = {
             'erp_id': erp_id,
@@ -81,7 +81,7 @@ class H2o(object):
         """
         Read customer from tax code.
         """
-        logging.info(f'Reading customer from tax code {code}')
+        logging.debug(f'Reading customer from tax code {code}')
         rq = f'{self.host}/customer/findByTax'
         payload = {
             'code': code
@@ -94,7 +94,7 @@ class H2o(object):
         """
         Update customer data.
         """
-        logging.info(f'Updating customer {customer_id}...')
+        logging.debug(f'Updating customer {customer_id}...')
         rq = f'{self.host}/customer/{customer_id}'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
@@ -104,7 +104,7 @@ class H2o(object):
         """
         Update customer ERP Xrefs.
         """
-        logging.info(f'Init creating customer {customer_id} ERP xref ...')
+        logging.debug(f'Init creating customer {customer_id} ERP xref ...')
         rq = f'{self.host}/customer/{customer_id}/xerp'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
@@ -115,7 +115,7 @@ class H2o(object):
         """
         Create new customer address
         """
-        logging.info(f'Creating customer {customer_id} address')
+        logging.debug(f'Creating customer {customer_id} address')
         rq = f'{self.host}/customer/{customer_id}/address'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
@@ -125,7 +125,7 @@ class H2o(object):
         """
         Update customer address.
         """
-        logging.info(f'Init updating {customer_id} address {address_id} ...')
+        logging.debug(f'Init updating {customer_id} address {address_id} ...')
         rq = f'{self.host}/customer/{customer_id}/address/{address_id}'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
@@ -135,7 +135,7 @@ class H2o(object):
         """
         List customer addresses.
         """
-        logging.info(f'Getting all customer {customer_id} addresses')
+        logging.debug(f'Getting all customer {customer_id} addresses')
         rq = '{self.host}/customer/{customer_id}/address'
         agent = self.s.getAgent()
         r = agent.get(rq, params=query)
@@ -145,7 +145,7 @@ class H2o(object):
         """
         Get customer address.
         """
-        logging.info(f'Get customer {customer_id} address {address_id}')
+        logging.debug(f'Get customer {customer_id} address {address_id}')
         rq = f'{self.host}/customer/{customer_id}/address/{address_id}'
         agent = self.s.getAgent()
         r = agent.get(rq, params=params)
@@ -155,7 +155,8 @@ class H2o(object):
         """
         List customer addresses.
         """
-        logging.info(f'Search customer {customer_id} address ext_id {ext_id}.')
+        logging.debug(
+            f'Search customer {customer_id} address ext_id {ext_id}.')
         payload = {
             'ext_id': ext_id
         }
@@ -172,7 +173,7 @@ class H2o(object):
         """
         Create new competitor.
         """
-        logging.info('Init creating competitor...')
+        logging.debug('Init creating competitor...')
         rq = f'{self.host}/competitor'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
@@ -182,7 +183,7 @@ class H2o(object):
         """
         Get competitor by id.
         """
-        logging.info(f'Reading competitor {competitor_id}...')
+        logging.debug(f'Reading competitor {competitor_id}...')
         rq = f'{self.host}/competitor/{competitor_id}'
         agent = self.s.getAgent()
         r = agent.get(rq)
@@ -193,7 +194,7 @@ class H2o(object):
         """
         Create new order.
         """
-        logging.info('Creating order %s' % payload)
+        logging.debug('Creating order %s' % payload)
         rq = f'{self.host}/order'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
@@ -203,7 +204,7 @@ class H2o(object):
         """
         Read all orders.
         """
-        logging.info('Getting orders.')
+        logging.debug('Getting orders.')
         rq = f'{self.host}/order'
         agent = self.s.getAgent()
         r = agent.get(rq, params=query)
@@ -213,7 +214,7 @@ class H2o(object):
         """
         Get order by id
         """
-        logging.info(f'Reading order {order_id}..')
+        logging.debug(f'Reading order {order_id}..')
         rq = f'{self.host}/order/{order_id}'
         agent = self.s.getAgent()
         r = agent.get(rq)
@@ -223,7 +224,7 @@ class H2o(object):
         """
         Read order from erp external ID.
         """
-        logging.info(f'Reading order {ext_id} for erp {erp_id}')
+        logging.debug(f'Reading order {ext_id} for erp {erp_id}')
         rq = f'{self.host}/order/findByErp'
         payload = {
             'erp_id': erp_id,
@@ -237,7 +238,7 @@ class H2o(object):
         """
         Create order detail.
         """
-        logging.info('Creating order detail')
+        logging.debug('Creating order detail')
         rq = f'{self.host}/order/{order_id}/detail'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
@@ -248,7 +249,7 @@ class H2o(object):
         """
         Read all order types.
         """
-        logging.info('Getting order types.')
+        logging.debug('Getting order types.')
         rq = f'{self.host}/order/type'
         agent = self.s.getAgent()
         r = agent.get(rq, params=query)
@@ -258,7 +259,7 @@ class H2o(object):
         """
         Get order type by name.
         """
-        logging.info('Getting order types.')
+        logging.debug('Getting order types.')
         rq = f'{self.host}/order/type/findByName'
         payload = {
             'name': name
@@ -271,7 +272,7 @@ class H2o(object):
         """
         Create new order type.
         """
-        logging.info('Creating new order type.')
+        logging.debug('Creating new order type.')
         rq = f'{self.host}/order/type'
         agent = self.s.getAgent()
         r = agent.get(rq, json=payload)

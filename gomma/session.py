@@ -121,7 +121,7 @@ class Session(object):
         logging.debug('Creating new requests session')
         agent = requests.Session()
         agent.headers.update(
-            {'user-agent': 'Gomma-sdk', 'Content-Type': 'application/json', 'Accept': 'application/json'})
+            {'user-agent': 'Gomma-sdk', 'Accept': 'application/json'})
         if not token:
             token = self.__getToken()
             if not token:
