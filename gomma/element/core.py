@@ -779,3 +779,164 @@ class Element(object):
             logging.error(f'Failed request {rq}')
             return False
         return self.s.response(r)
+
+    # crimptable
+    def createCrimptable(self, payload):
+        """ Create new crimping table. """
+        logging.debug(f'Creating new crtable {payload}')
+        rq = f'{self.host}/crimp/table'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getCrimptable(self, table_id: int, params={}):
+        """
+        Read crimping table.
+        """
+        logging.debug(f'Reading crimping table {table_id}')
+        rq = f'{self.host}/crimp/table/{table_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def updateCrimptable(self, table_id: int, payload):
+        """
+        Update crimping table.
+        """
+        logging.debug(f'Updating crimping table {table_id} with {payload}')
+        rq = f'{self.host}/crimp/table/{table_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getCrimptables(self, params={}):
+        """ Get crimping tables """
+        logging.debug(f'List crimptable {params}')
+        rq = f'{self.host}/crimp/table'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    # crimptable values
+    def createCrimptableValue(self, table_id: int, payload):
+        """ Create new crimping table. """
+        logging.debug(f'Creating new crtable {payload}')
+        rq = f'{self.host}/crimp/table/{table_id}/value'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getCrimptableValue(self, table_id: int, value_id: int, params={}):
+        """
+        Read crimping table value.
+        """
+        logging.debug(f'Reading crimping table {table_id}')
+        rq = f'{self.host}/crimp/table/{table_id}/value/{value_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def updateCrimptableValue(self, table_id: int, value_id: int, payload):
+        """
+        Update crimping table value.
+        """
+        logging.debug(
+            f'Updating crimping table {table_id} value {value_id} with {payload}')
+        rq = f'{self.host}/crimp/table/{table_id}/value/{value_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getCrimptableValues(self, table_id: int, params={}):
+        """ Get crimping tables """
+        logging.debug(f'List crimptable {table_id} values {params}')
+        rq = f'{self.host}/crimp/table/{table_id}/value'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    # crimpstyle
+
+    def createCrimpstyle(self, payload):
+        """ Create new crimping style. """
+        logging.debug(f'Creating new crstyle {payload}')
+        rq = f'{self.host}/crimp/style'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getCrimpstyle(self, style_id: int, params={}):
+        """
+        Read crimping style.
+        """
+        logging.debug(f'Reading crimping style {style_id}')
+        rq = f'{self.host}/crimp/style/{style_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def updateCrimpstyle(self, style_id: int, payload):
+        """
+        Update crimping style.
+        """
+        logging.debug(f'Updating crimping style {style_id} with {payload}')
+        rq = f'{self.host}/crimp/style/{style_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getCrimpstyles(self, params={}):
+        """ Get crimping styles """
+        logging.debug(f'List crimpstyle {params}')
+        rq = f'{self.host}/crimp/style'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
