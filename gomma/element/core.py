@@ -849,6 +849,20 @@ class Element(object):
             return False
         return self.s.response(r)
 
+    def patchCrimptable(self, table_id: int, payload):
+        """
+        Patch crimp table.
+        """
+        logging.debug(f'Patching table {table_id} with {payload}')
+        rq = f'{self.host}/crimp/table/{table_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.patch(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
     def getCrimptables(self, params={}):
         """ Get crimping tables """
         logging.debug(f'List crimptable {params}')
