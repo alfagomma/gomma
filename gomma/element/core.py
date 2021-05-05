@@ -807,6 +807,34 @@ class Element(object):
             return False
         return self.s.response(r)
 
+    def getCrimptableFromName(self, name, params={}):
+        """
+        Read crimping table from name.
+        """
+        logging.debug(f'Reading crimping table name {name}')
+        rq = f'{self.host}/crimp/table/findByName?name={name}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)  
+
+    def getCrimptableFromSlug(self, name, params={}):
+        """
+        Read crimping table from name.
+        """
+        logging.debug(f'Reading crimping table name {name}')
+        rq = f'{self.host}/crimp/table/findByName?name={name}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)                
+
     def updateCrimptable(self, table_id: int, payload):
         """
         Update crimping table.
