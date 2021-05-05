@@ -819,7 +819,7 @@ class Element(object):
         except Exception:
             logging.error(f'Failed request {rq}')
             return False
-        return self.s.response(r)  
+        return self.s.response(r)
 
     def getCrimptableFromSlug(self, name, params={}):
         """
@@ -833,7 +833,7 @@ class Element(object):
         except Exception:
             logging.error(f'Failed request {rq}')
             return False
-        return self.s.response(r)                
+        return self.s.response(r)
 
     def updateCrimptable(self, table_id: int, payload):
         """
@@ -961,6 +961,20 @@ class Element(object):
         """ Get crimping styles """
         logging.debug(f'List crimpstyle {params}')
         rq = f'{self.host}/crimp/style'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getCrimpstyleFromName(self, name, params={}):
+        """
+        Read crimping style from name.
+        """
+        logging.debug(f'Reading crimping style name {name}')
+        rq = f'{self.host}/crimp/style/findByName?name={name}'
         try:
             agent = self.s.getAgent()
             r = agent.get(rq, params=params)
