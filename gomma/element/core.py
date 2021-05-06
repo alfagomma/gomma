@@ -334,6 +334,76 @@ class Element(object):
             return False
         return self.s.response(r)
 
+    # attribute
+    def createAttributeValue(self, attribute_id: int, payload):
+        """ Crete new attribute value. """
+        logging.debug(f'Creating new attribute value {payload}')
+        rq = f'{self.host}/attribute/{attribute_id}/value'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getAttributesValues(self, attribute_id: int, params={}):
+        """
+        Read all attribute values.
+        """
+        logging.debug('Getting all the attribute values.')
+        rq = f'{self.host}/attribute/{attribute_id}/value'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getAttributeValue(self, attribute_id: int, value_id: int, params={}):
+        """ Attribute value by id """
+        logging.debug(f'Get attribute {attribute_id} value {value_id}')
+        rq = f'{self.host}/attribute/{attribute_id}/value/{value_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getAttributeValueByName(self, attribute_id: int, value_name: str, params={}):
+        """ Attribute by name """
+        logging.debug(
+            f'Get attribute {attribute_id} value by name {value_name}')
+        query = {
+            'name': value_name
+        }
+        payload = {**params, **query}
+        rq = f'{self.host}/attribute/{attribute_id}/value/findByName'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def updateAttributeValue(self, attribute_id: int, value_id: int, payload):
+        """
+        Update attribute value.
+        """
+        logging.debug(f'Updating attribute {attribute_id} value{value_id} ...')
+        rq = f'{self.host}/attribute/{attribute_id}/value/{value_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
     # family
     def createFamily(self, payload):
         """ crea una nuova famiglia """
