@@ -1066,3 +1066,27 @@ class Element(object):
             logging.error(f'Failed request {rq}')
             return False
         return self.s.response(r)
+
+    # norm
+
+    def createNorm(self, normName: str):
+        """
+        Create new norm.
+        """
+        logging.info(f'Creating norm {normName}')
+        rq = f'{self.host}/norm'
+        payload = {'name': normName}
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def getNormFromName(self, normName: str):
+        """
+        Prende la norm dal nome.
+        """
+        logging.info(f'Get norm by name {normName}')
+        rq = f'{self.host}/norm/findByName'
+        payload = {'name': normName}
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=payload)
+        return self.s.response(r)

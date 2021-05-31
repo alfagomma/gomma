@@ -10,7 +10,6 @@ __author__ = "Davide Pellegrino"
 __version__ = "2.1.1"
 __date__ = "2019-11-07"
 
-import json
 import logging
 
 from gomma.session import Session
@@ -112,8 +111,8 @@ class Base(object):
         r = agent.get(rq, params=params)
         return self.s.response(r)
 
-
     # company
+
     def getCompany(self, company_id: int, params={}):
         """
         Legge un company dal suo id.

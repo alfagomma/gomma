@@ -8,9 +8,8 @@ H2o SDK
 
 __author__ = "Davide Pellegrino"
 __version__ = "1.1.4"
-__date__ = "2019-05-22"
+__date__ = "2021-05-31"
 
-import json
 import logging
 
 from gomma.session import Session
@@ -189,43 +188,43 @@ class H2o(object):
         r = agent.get(rq)
         return self.s.response(r)
 
-    # order
-    def createOrder(self, payload):
+    # invoice
+    def createInvoice(self, payload):
         """
-        Create new order.
+        Create new invoice.
         """
-        logging.debug('Creating order %s' % payload)
-        rq = f'{self.host}/order'
+        logging.debug(f'Creating invoice {payload}')
+        rq = f'{self.host}/invoice'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
-    def getOrders(self, query=None):
+    def getinvoices(self, query=None):
         """
-        Read all orders.
+        Read all invoices.
         """
-        logging.debug('Getting orders.')
-        rq = f'{self.host}/order'
+        logging.debug('Getting invoices.')
+        rq = f'{self.host}/invoice'
         agent = self.s.getAgent()
         r = agent.get(rq, params=query)
         return self.s.response(r)
 
-    def getOrder(self, order_id: int):
+    def getInvoice(self, invoice_id: int):
         """
-        Get order by id
+        Get invoice by id
         """
-        logging.debug(f'Reading order {order_id}..')
-        rq = f'{self.host}/order/{order_id}'
+        logging.debug(f'Reading invoice {invoice_id}..')
+        rq = f'{self.host}/invoice/{invoice_id}'
         agent = self.s.getAgent()
         r = agent.get(rq)
         return self.s.response(r)
 
-    def getOrderFromErp(self, erp_id: int, ext_id):
+    def getInvoiceFromErp(self, erp_id: int, ext_id):
         """
-        Read order from erp external ID.
+        Read invoice from erp external ID.
         """
-        logging.debug(f'Reading order {ext_id} for erp {erp_id}')
-        rq = f'{self.host}/order/findByErp'
+        logging.debug(f'Reading invoice {ext_id} for erp {erp_id}')
+        rq = f'{self.host}/invoice/findByErp'
         payload = {
             'erp_id': erp_id,
             'ext_id': ext_id
@@ -234,33 +233,33 @@ class H2o(object):
         r = agent.get(rq, params=payload)
         return self.s.response(r)
 
-    def createOrderDetail(self, order_id: int, payload):
+    def createInvoiceDetail(self, invoice_id: int, payload):
         """
-        Create order detail.
+        Create invoice detail.
         """
-        logging.debug('Creating order detail')
-        rq = f'{self.host}/order/{order_id}/detail'
+        logging.debug('Creating invoice detail')
+        rq = f'{self.host}/invoice/{invoice_id}/detail'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
-    # order type
-    def getOrderTypes(self, query=None):
+    # invoice type
+    def getInvoiceTypes(self, query=None):
         """
-        Read all order types.
+        Read all invoice types.
         """
-        logging.debug('Getting order types.')
-        rq = f'{self.host}/order/type'
+        logging.debug('Getting invoice types.')
+        rq = f'{self.host}/invoice/type'
         agent = self.s.getAgent()
         r = agent.get(rq, params=query)
         return self.s.response(r)
 
-    def getOrderTypeFromName(self, name: str):
+    def getInvoiceTypeFromName(self, name: str):
         """
-        Get order type by name.
+        Get invoice type by name.
         """
-        logging.debug('Getting order types.')
-        rq = f'{self.host}/order/type/findByName'
+        logging.debug('Getting invoice types.')
+        rq = f'{self.host}/invoice/type/findByName'
         payload = {
             'name': name
         }
@@ -268,12 +267,12 @@ class H2o(object):
         r = agent.get(rq, params=payload)
         return self.s.response(r)
 
-    def createOrderType(self, payload):
+    def createInvoiceType(self, payload):
         """
-        Create new order type.
+        Create new invoice type.
         """
-        logging.debug('Creating new order type.')
-        rq = f'{self.host}/order/type'
+        logging.debug('Creating new invoice type.')
+        rq = f'{self.host}/invoice/type'
         agent = self.s.getAgent()
         r = agent.get(rq, json=payload)
         return self.s.response(r)
