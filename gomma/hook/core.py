@@ -28,7 +28,7 @@ class Hook(object):
         """
         Initialize main class with this and that.
         """
-        logging.info('Init Coral SDK')
+        logging.info('Init Hook SDK')
         s = Session(profile_name)
         host = s.config.get('hook_host')
         self.host = f'{host}'
