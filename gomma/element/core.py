@@ -945,6 +945,37 @@ class Element(object):
             return False
         return self.s.response(r)
 
+    # documents 
+    def addCrimptableDocument(self, crimptable_id: int, localFile):
+        """ 
+        Add doc file to Crimp table. 
+        """
+        logging.debug(f'Add {localFile} to {crimptable_id}')
+        rq = f'{self.host}/crimptable/{crimptable_id}/doc'
+        fin = open(localFile, 'rb')
+        files = {'src': fin}
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, files=files)
+        except Exception:
+            logging.error(f'Failed request {rq} with files {files}')
+            return False
+        return self.s.response(r)
+
+    def removeCrimptableDocument(self, crimptable_id: int, document_id:int):
+        """ 
+        Remove doc file to Crimp table. 
+        """
+        logging.debug(f'Removing doc#{document_id} to {crimptable_id}')
+        rq = f'{self.host}/crimptable/{crimptable_id}/doc/{document_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.delete(rq)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
     # crimptable values
     def createCrimptableValue(self, table_id: int, payload):
         """ Create new crimping table. """
