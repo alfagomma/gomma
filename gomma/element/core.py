@@ -945,13 +945,13 @@ class Element(object):
             return False
         return self.s.response(r)
 
-    # documents 
-    def addCrimptableDocument(self, crimptable_id: int, localFile):
+    # documents
+    def addCrimptableDocument(self, table_id: int, localFile):
         """ 
         Add doc file to Crimp table. 
         """
-        logging.debug(f'Add {localFile} to {crimptable_id}')
-        rq = f'{self.host}/crimptable/{crimptable_id}/doc'
+        logging.debug(f'Add {localFile} to {table_id}')
+        rq = f'{self.host}/crimp/table/{table_id}/doc'
         fin = open(localFile, 'rb')
         files = {'src': fin}
         try:
@@ -962,12 +962,12 @@ class Element(object):
             return False
         return self.s.response(r)
 
-    def removeCrimptableDocument(self, crimptable_id: int, document_id:int):
+    def removeCrimptableDocument(self, table_id: int, document_id: int):
         """ 
         Remove doc file to Crimp table. 
         """
-        logging.debug(f'Removing doc#{document_id} to {crimptable_id}')
-        rq = f'{self.host}/crimptable/{crimptable_id}/doc/{document_id}'
+        logging.debug(f'Removing doc#{document_id} to {table_id}')
+        rq = f'{self.host}/crimp/table/{table_id}/doc/{document_id}'
         try:
             agent = self.s.getAgent()
             r = agent.delete(rq)
