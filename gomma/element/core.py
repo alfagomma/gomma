@@ -950,13 +950,13 @@ class Element(object):
         """ 
         Add doc file to Crimp table. 
         """
-        logging.debug(f'Add {localFile} to {table_id}')
+        logging.debug(f'Add {localFile} with {payload} to {table_id}')
         rq = f'{self.host}/crimp/table/{table_id}/doc'
         fin = open(localFile, 'rb')
         files = {'src': fin}
         try:
             agent = self.s.getAgent()
-            r = agent.post(rq, files=files, json=payload)
+            r = agent.post(rq, files=files, data=payload)
         except Exception:
             logging.error(f'Failed request {rq} with files {files}')
             return False
