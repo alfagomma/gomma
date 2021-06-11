@@ -946,7 +946,7 @@ class Element(object):
         return self.s.response(r)
 
     # documents
-    def addCrimptableDocument(self, table_id: int, localFile):
+    def addCrimptableDocument(self, table_id: int, localFile, payload):
         """ 
         Add doc file to Crimp table. 
         """
@@ -956,7 +956,7 @@ class Element(object):
         files = {'src': fin}
         try:
             agent = self.s.getAgent()
-            r = agent.post(rq, files=files)
+            r = agent.post(rq, files=files, json=payload)
         except Exception:
             logging.error(f'Failed request {rq} with files {files}')
             return False
