@@ -1098,8 +1098,8 @@ class Element(object):
             return False
         return self.s.response(r)
 
+    # standardbody
 
-    # standardbody 
     def createStandardbody(self, stdname: str):
         """
         Create new standardbody.
@@ -1139,6 +1139,20 @@ class Element(object):
         r = agent.get(rq, params=payload)
         return self.s.response(r)
 
+    def patchStandardbody(self, stdbody_id: int, payload):
+        """
+        Patch standardbody.
+        """
+        logging.debug(f'Patching standardbody {stdbody_id} with {payload}')
+        rq = f'{self.host}/standardbody/{stdbody_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.patch(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
     # norm
     def createNorm(self, normName: str):
         """
@@ -1174,6 +1188,34 @@ class Element(object):
         try:
             agent = self.s.getAgent()
             r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def updateNorm(self, norm_id: int, payload):
+        """
+        Update norm.
+        """
+        logging.debug(f'Updating norm {norm_id} with {payload}')
+        rq = f'{self.host}/norm/{norm_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def patchNorm(self, norm_id: int, payload):
+        """
+        Patch norm.
+        """
+        logging.debug(f'Patching norm {norm_id} with {payload}')
+        rq = f'{self.host}/norm/{norm_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.patch(rq, json=payload)
         except Exception:
             logging.error(f'Failed request {rq}')
             return False
