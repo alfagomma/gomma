@@ -1098,8 +1098,48 @@ class Element(object):
             return False
         return self.s.response(r)
 
-    # norm
 
+    # standardbody 
+    def createStandardbody(self, stdname: str):
+        """
+        Create new standardbody.
+        """
+        logging.info(f'Creating standardbody {stdname}')
+        rq = f'{self.host}/standardbody'
+        payload = {'name': stdname}
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def getStandardbody(self, stdbody_id: int, params={}):
+        """
+        Read standardbody style.
+        """
+        logging.debug(f'Reading standardbody {stdbody_id}')
+        rq = f'{self.host}/standardbody/{stdbody_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getStandardbodyFromName(self, stdname: str, params={}):
+        """
+        Read Standardbody by name.
+        """
+        logging.info(f'Get standardbody by name {stdname}')
+        rq = f'{self.host}/standardbody/findByName'
+        query = {
+            'name': stdname
+        }
+        payload = {**params, **query}
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=payload)
+        return self.s.response(r)
+
+    # norm
     def createNorm(self, normName: str):
         """
         Create new norm.
@@ -1111,13 +1151,30 @@ class Element(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
-    def getNormFromName(self, normName: str):
+    def getNormFromName(self, normName: str, params={}):
         """
         Prende la norm dal nome.
         """
         logging.info(f'Get norm by name {normName}')
         rq = f'{self.host}/norm/findByName'
-        payload = {'name': normName}
+        query = {
+            'name': normName
+        }
+        payload = {**params, **query}
         agent = self.s.getAgent()
         r = agent.get(rq, params=payload)
+        return self.s.response(r)
+
+    def getNorm(self, norm_id: int, params={}):
+        """
+        Read norm style.
+        """
+        logging.debug(f'Reading norm {norm_id}')
+        rq = f'{self.host}/norm/{norm_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
         return self.s.response(r)
