@@ -500,3 +500,102 @@ class Base(object):
             logging.error(f'Failed request {rq}')
             return False
         return self.s.response(r)
+
+    def patchWarehouse(self, whs_id: int, payload):
+        """
+        Patch warehouse.
+        """
+        logging.debug(f'Patching warehouse {whs_id} with {payload}')
+        rq = f'{self.host}/warehouse/{whs_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.patch(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    # network
+    def listNetworks(self, params={}):
+        """
+        Read all networks.
+        """
+        logging.info('Reading all networks')
+        rq = f'{self.host}/network'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getNetwork(self, network_id: int, params={}):
+        """Get network details."""
+        logging.info(f'Get network {network_id} with params {params}')
+        rq = f'{self.host}/network/{network_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def createNetwork(self, payload):
+        """ 
+        Create new network
+        """
+        logging.info(f'Creating new network {payload}')
+        rq = f'{self.host}/network'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def updateNetwork(self, network_id: int, payload):
+        """ 
+        Update network.
+        """
+        logging.info(f'Updateing network {network_id} - {payload}')
+        rq = f'{self.host}/network/{network_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getNetworkFromName(self, name: str, params={}):
+        """read network from name."""
+        logging.info(f'GEt network from {name}')
+        query = {
+            'name': name
+        }
+        payload = {**params, **query}
+        rq = f'{self.host}/network/findByName'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def patchNetwork(self, network_id: int, payload):
+        """
+        Patch network.
+        """
+        logging.debug(f'Patching network {network_id} with {payload}')
+        rq = f'{self.host}/network/{network_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.patch(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
