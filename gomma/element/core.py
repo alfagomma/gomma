@@ -662,6 +662,24 @@ class Element(object):
             return False
         return self.s.response(r)
 
+    def updateFamilySortingPosition(self, family_id: int, positions: list):
+        """
+        Update family sorting position.
+        """
+        logging.debug(
+            f'Updating family {family_id} sorting position...')
+        rq = f'{self.host}/family/{family_id}/sorting/position'
+        payload = {
+            'positions': positions
+        }
+        try:
+            agent = self.s.getAgent()
+            r = agent.put(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
     # feature
     def createFeature(self, feature_name: str):
         """
