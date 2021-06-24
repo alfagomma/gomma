@@ -896,7 +896,7 @@ class Element(object):
     def getTreeLeafByFamilyCode(self, catalog_id: int, tree_id: int, code: str, params={}):
         """ Get catalog tree leaf by family code. """
         logging.debug(f'Get catalog tree {tree_id} leaf by family code {code}')
-        rq = f'{self.host}/catalog/{catalog_id}/tree/{tree_id}/findByFamilyCode'
+        rq = f'{self.host}/catalog/{catalog_id}/tree/{tree_id}/leaf/findByFamilyCode'
         query = {**{'code': code}, **params}
         try:
             agent = self.s.getAgent()
