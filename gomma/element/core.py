@@ -819,6 +819,18 @@ class Element(object):
             return False
         return self.s.response(r)
 
+    def createTree(self, catalog_id: int, payload):
+        """ Create new catalog tree. """
+        logging.debug(f'Creating new catalog {catalog_id} tree {payload}')
+        rq = f'{self.host}/catalog/{catalog_id}/tree'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
     def getTree(self, catalog_id: int, tree_id: int, params={}):
         """ Get catalog tree by ID """
         logging.debug(f'Get catalog tree {catalog_id}')
@@ -856,6 +868,19 @@ class Element(object):
             return False
         return self.s.response(r)
 
+    def createLeaf(self, catalog_id: int, tree_id: int, payload):
+        """ Create new catalog tree leaf. """
+        logging.debug(
+            f'Creating new catalog {catalog_id} tree {tree_id} leaf {payload}')
+        rq = f'{self.host}/catalog/{catalog_id}/tree/{tree_id}/leaf'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
     def getTreeLeaf(self, catalog_id: int, tree_id: int, leaf_id: int, params={}):
         """ Get catalog tree leaf ID """
         logging.debug(f'Get catalog tree {catalog_id}')
@@ -876,6 +901,19 @@ class Element(object):
         try:
             agent = self.s.getAgent()
             r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def attachLeafItems(self, catalog_id: int, tree_id: int, leaf_id:int, payload):
+        """ attach leaf items. """
+        logging.debug(
+            f'Attach items {payload} to catalog {catalog_id} tree {tree_id} leaf {leaf_id}')
+        rq = f'{self.host}/catalog/{catalog_id}/tree/{tree_id}/leaf/{leaf_id}/item'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
         except Exception:
             logging.error(f'Failed request {rq}')
             return False
