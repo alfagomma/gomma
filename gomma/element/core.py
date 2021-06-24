@@ -893,6 +893,19 @@ class Element(object):
             return False
         return self.s.response(r)
 
+    def getTreeLeafByFamilyCode(self, catalog_id: int, tree_id: int, code: str, params={}):
+        """ Get catalog tree leaf by family code. """
+        logging.debug(f'Get catalog tree {tree_id} leaf by family code {code}')
+        rq = f'{self.host}/catalog/{catalog_id}/tree/{tree_id}/findByFamilyCode'
+        query = {**{'code': code}, **params}
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=query)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
     def getLeafItems(self, catalog_id: int, tree_id: int, leaf_id: int, params={}):
         """ Get catalog tree leaves """
         logging.debug(
@@ -906,7 +919,7 @@ class Element(object):
             return False
         return self.s.response(r)
 
-    def attachLeafItems(self, catalog_id: int, tree_id: int, leaf_id:int, payload):
+    def attachLeafItems(self, catalog_id: int, tree_id: int, leaf_id: int, payload):
         """ attach leaf items. """
         logging.debug(
             f'Attach items {payload} to catalog {catalog_id} tree {tree_id} leaf {leaf_id}')
