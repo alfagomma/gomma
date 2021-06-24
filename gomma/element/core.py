@@ -831,6 +831,19 @@ class Element(object):
             return False
         return self.s.response(r)
 
+    def getTreeByName(self, catalog_id: int, name: str, params={}):
+        """ Get catalog tree by NAME """
+        logging.debug(f'Get catalog tree {name}')
+        rq = f'{self.host}/catalog/{catalog_id}/tree/findByName'
+        query = {**{'name': name}, **params}
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=query)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
     def getTreeLeaves(self, catalog_id: int, tree_id: int, params={}):
         """ Get catalog tree leaves """
         logging.debug(f'Get catalog tree {tree_id} into catalog {catalog_id}')
@@ -1159,7 +1172,7 @@ class Element(object):
             r = agent.get(rq, params=payload)
         except Exception:
             logging.error(f'Failed request {rq}')
-            return False            
+            return False
         return self.s.response(r)
 
     def patchStandardbody(self, stdbody_id: int, payload):
@@ -1204,7 +1217,7 @@ class Element(object):
             r = agent.get(rq, params=payload)
         except Exception:
             logging.error(f'Failed request {rq}')
-            return False            
+            return False
         return self.s.response(r)
 
     def getNorm(self, norm_id: int, params={}):
