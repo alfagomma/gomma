@@ -26,8 +26,7 @@ class H2o(object):
         """
         logging.info('Init H2o SDK')
         s = Session(profile_name)
-        host = s.config.get('agapi_host')
-        self.host = f'{host}/h2o'
+        self.host = s.config.get('agapi_host')
         self.s = s
 
     # customer

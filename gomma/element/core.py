@@ -26,8 +26,7 @@ class Element(object):
         """
         logging.info(f'Init Element SDK -p {profile_name}')
         s = Session(profile_name)
-        host = s.config.get('agapi_host')
-        self.host = f'{host}/element'
+        self.host = s.config.get('agapi_host')
         self.s = s
 
     # item
