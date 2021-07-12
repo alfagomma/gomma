@@ -27,6 +27,7 @@ class Element(object):
         logging.info(f'Init Element SDK -p {profile_name}')
         s = Session(profile_name)
         self.host = s.config.get('agapi_host')
+        logging.debug(f'host is {self.host}')
         self.s = s
 
     # item
@@ -87,7 +88,7 @@ class Element(object):
             agent = self.s.getAgent()
             r = agent.get(rq, params=payload)
         except Exception:
-            logging.error(f'Failed request {rq}')
+            logging.error(f'Failed request {rq} {payload}')
             return False
         return self.s.response(r)
 

@@ -118,7 +118,7 @@ class Session(object):
 
     def __createSessionAgent(self, token=None):
         """ Create requests session. """
-        logging.debug('Creating new requests session')
+        logging.debug(f'Creating new requests session')
         agent = requests.Session()
         agent.headers.update(
             {'user-agent': 'Gomma-sdk', 'Accept': 'application/json'})
@@ -127,11 +127,13 @@ class Session(object):
             if not token:
                 logging.error(f'Unable to retrive token')
                 return False
+        logging.debug(f'Token is {token}')
         try:
             agent.headers.update({'x-uid': token['uid']})
         except Exception:
             logging.error("Invalid token uid keys")
             return False
+        logging.debug('ok, saving current agent')
         self.__currentAgent = agent
         return agent
 
