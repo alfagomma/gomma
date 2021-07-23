@@ -232,16 +232,6 @@ class H2o(object):
         r = agent.get(rq, params=payload)
         return self.s.response(r)
 
-    def createInvoiceDetail(self, invoice_id: int, payload):
-        """
-        Create invoice detail.
-        """
-        logging.debug('Creating invoice detail')
-        rq = f'{self.host}/invoice/{invoice_id}/detail'
-        agent = self.s.getAgent()
-        r = agent.post(rq, json=payload)
-        return self.s.response(r)
-
     # invoice type
     def getInvoiceTypes(self, query=None):
         """
