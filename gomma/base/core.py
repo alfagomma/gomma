@@ -187,8 +187,8 @@ class Base(object):
             return False
         return self.s.response(r)
 
-
     # supplier
+
     def getSupplier(self, supplier_id: int, params={}):
         """
         Read single supplier.
@@ -595,6 +595,237 @@ class Base(object):
         try:
             agent = self.s.getAgent()
             r = agent.patch(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    # glaccount
+    def listGlaccounts(self, params={}):
+        """
+        Read all glaccounts.
+        """
+        logging.info('Reading all glaccounts')
+        rq = f'{self.host}/glaccount'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getGlaccount(self, glaccount_id: int, params={}):
+        """Get glaccount details."""
+        logging.info(f'Get glaccount {glaccount_id} with params {params}')
+        rq = f'{self.host}/glaccount/{glaccount_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def createGlaccount(self, payload):
+        """ 
+        Create new glaccount
+        """
+        logging.info(f'Creating new glaccount {payload}')
+        rq = f'{self.host}/glaccount'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def updateGlaccount(self, glaccount_id: int, payload):
+        """ 
+        Update glaccount.
+        """
+        logging.info(f'Updateing glaccount {glaccount_id} - {payload}')
+        rq = f'{self.host}/glaccount/{glaccount_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getGlaccountFromName(self, name: str, params={}):
+        """read glaccount from name."""
+        logging.info(f'Get glaccount from {name}')
+        query = {
+            'name': name
+        }
+        payload = {**params, **query}
+        rq = f'{self.host}/glaccount/findByName'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getGlaccountFromCode(self, code: str, params={}):
+        """read glaccount from code."""
+        logging.info(f'Get glaccount from {code}')
+        query = {
+            'code': code
+        }
+        payload = {**params, **query}
+        rq = f'{self.host}/glaccount/findByCode'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    # glaccount category
+    def listGlaccountCategory(self, params={}):
+        """
+        Read all glaccount category.
+        """
+        logging.info('Reading all glaccount categories')
+        rq = f'{self.host}/glaccount/category'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getGlaccountCategory(self, category_id: int, params={}):
+        """Get glaccount details."""
+        logging.info(
+            f'Get glaccount category {category_id} with params {params}')
+        rq = f'{self.host}/glaccount/category/{category_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def createGlaccountCategory(self, payload):
+        """ 
+        Create new glaccount category
+        """
+        logging.info(f'Creating new glaccount category {payload}')
+        rq = f'{self.host}/glaccount/category'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def updateGlaccountCategory(self, category_id: int, payload):
+        """ 
+        Update glaccount.
+        """
+        logging.info(f'Updateing glaccount {category_id} - {payload}')
+        rq = f'{self.host}/glaccount/category/{category_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getGlaccountCategoryFromName(self, name: str, params={}):
+        """read glaccount from name."""
+        logging.info(f'Get glaccount category from {name}')
+        query = {
+            'name': name
+        }
+        payload = {**params, **query}
+        rq = f'{self.host}/glaccount/category/findByName'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    # glaccount kpi
+    def listGlaccountKpi(self, params={}):
+        """
+        Read all glaccount kpi.
+        """
+        logging.info('Reading all glaccount kpis')
+        rq = f'{self.host}/glaccount/kpi'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getGlaccountKpi(self, kpi_id: int, params={}):
+        """Get glaccount details."""
+        logging.info(
+            f'Get glaccount kpi {kpi_id} with params {params}')
+        rq = f'{self.host}/glaccount/kpi/{kpi_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def createGlaccountKpi(self, payload):
+        """ 
+        Create new glaccount kpi
+        """
+        logging.info(f'Creating new glaccount kpi {payload}')
+        rq = f'{self.host}/glaccount/kpi'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def updateGlaccountKpi(self, kpi_id: int, payload):
+        """ 
+        Update glaccount.
+        """
+        logging.info(f'Updateing glaccount {kpi_id} - {payload}')
+        rq = f'{self.host}/glaccount/kpi/{kpi_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getGlaccountKpiFromName(self, name: str, params={}):
+        """read glaccount from name."""
+        logging.info(f'Get glaccount kpi from {name}')
+        query = {
+            'name': name
+        }
+        payload = {**params, **query}
+        rq = f'{self.host}/glaccount/kpi/findByName'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=payload)
         except Exception:
             logging.error(f'Failed request {rq}')
             return False
