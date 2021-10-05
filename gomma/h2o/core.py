@@ -109,25 +109,18 @@ class H2o(object):
         return self.s.response(r)
 
     # customer markets
-    def attachCustomerMarket(self, customer_id: int, payload):
+    def attachCustomerMarket(self, customer_id: int, market_id: int):
         """
         Create new customer market
         """
-        logging.debug(f'Creating customer {customer_id} market')
+        logging.debug(f'Attach market {market_id} to the customer {customer_id}')
+        payload = {
+            'market_id': market_id
+        }        
         rq = f'{self.host}/customer/{customer_id}/market'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
-        return self.s.response(r)
-
-    def syncCustomerMarket(self, customer_id: int, payload):
-        """
-        Syncronize customer markets
-        """
-        logging.debug(f'Syncing customer {customer_id} markets')
-        rq = f'{self.host}/customer/{customer_id}/market/sync'
-        agent = self.s.getAgent()
-        r = agent.post(rq, json=payload)
-        return self.s.response(r)        
+        return self.s.response(r)       
 
     # customer address
     def createCustomerAddress(self, customer_id: int, payload):
