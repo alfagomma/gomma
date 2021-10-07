@@ -45,7 +45,6 @@ class H2o(object):
         Create new customer.
         """
         logging.debug('Init creating customer...')
-        print(payload)
         rq = f'{self.host}/customer'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
@@ -113,14 +112,15 @@ class H2o(object):
         """
         Create new customer market
         """
-        logging.debug(f'Attach market {market_id} to the customer {customer_id}')
+        logging.debug(
+            f'Attach market {market_id} to the customer {customer_id}')
         payload = {
             'market_id': market_id
-        }        
+        }
         rq = f'{self.host}/customer/{customer_id}/market'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
-        return self.s.response(r)       
+        return self.s.response(r)
 
     # customer address
     def createCustomerAddress(self, customer_id: int, payload):
