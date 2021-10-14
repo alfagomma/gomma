@@ -671,24 +671,57 @@ class Base(object):
             return False
         return self.s.response(r)
 
-    def getGlaccountFromCode(self, code: str, params={}):
-        """read glaccount from code."""
-        logging.info(f'Get glaccount from {code}')
-        query = {
-            'code': code
+    def attachGlaccountCategory(self, glaccount_id: int, category_id: int):
+        """
+        Add category to glaccount
+        """
+        logging.debug(
+            f'Attaching category {category_id} at glaccount {glaccount_id} ...')
+        rq = f"{self.host}/glaccount/{glaccount_id}/category"
+        payload = {
+            'category_id': category_id
         }
-        payload = {**params, **query}
-        rq = f'{self.host}/glaccount/findByCode'
         try:
             agent = self.s.getAgent()
-            r = agent.get(rq, params=payload)
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def syncGlaccountCategory(self, glaccount_id: int, categories: list = []):
+        """
+        Sync glaccount categories.
+        """
+        logging.debug(
+            f'Syncing glaccount {glaccount_id} categories {categories} ...')
+        rq = f"{self.host}/glaccount/{glaccount_id}/category/sync"
+        payload = {'categoryid[]': cat for cat in categories}
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def detachGlaccountCategory(self, glaccount_id: int, category_id: int):
+        """
+        Remove category from glaccount
+        """
+        logging.debug(
+            f'Removing category {category_id} from glaccount {glaccount_id} ...')
+        rq = f"{self.host}/glaccount/{glaccount_id}/category/{category_id}"
+        try:
+            agent = self.s.getAgent()
+            r = agent.delete(rq)
         except Exception:
             logging.error(f'Failed request {rq}')
             return False
         return self.s.response(r)
 
     # glaccount category
-    def listGlaccountCategory(self, params={}):
+    def listGlcategory(self, params={}):
         """
         Read all glaccount category.
         """
@@ -702,7 +735,7 @@ class Base(object):
             return False
         return self.s.response(r)
 
-    def getGlaccountCategory(self, category_id: int, params={}):
+    def getGlcategory(self, category_id: int, params={}):
         """Get glaccount details."""
         logging.info(
             f'Get glaccount category {category_id} with params {params}')
@@ -715,7 +748,7 @@ class Base(object):
             return False
         return self.s.response(r)
 
-    def createGlaccountCategory(self, payload):
+    def createGlcategory(self, payload):
         """ 
         Create new glaccount category
         """
@@ -729,7 +762,7 @@ class Base(object):
             return False
         return self.s.response(r)
 
-    def updateGlaccountCategory(self, category_id: int, payload):
+    def updateGlcategory(self, category_id: int, payload):
         """ 
         Update glaccount.
         """
@@ -743,7 +776,7 @@ class Base(object):
             return False
         return self.s.response(r)
 
-    def getGlaccountCategoryFromName(self, name: str, params={}):
+    def getGlcategoryFromName(self, name: str, params={}):
         """read glaccount from name."""
         logging.info(f'Get glaccount category from {name}')
         query = {
@@ -760,7 +793,7 @@ class Base(object):
         return self.s.response(r)
 
     # glaccount kpi
-    def listGlaccountKpi(self, params={}):
+    def listGlKpi(self, params={}):
         """
         Read all glaccount kpi.
         """
@@ -774,7 +807,7 @@ class Base(object):
             return False
         return self.s.response(r)
 
-    def getGlaccountKpi(self, kpi_id: int, params={}):
+    def getGlKpi(self, kpi_id: int, params={}):
         """Get glaccount details."""
         logging.info(
             f'Get glaccount kpi {kpi_id} with params {params}')
@@ -787,7 +820,7 @@ class Base(object):
             return False
         return self.s.response(r)
 
-    def createGlaccountKpi(self, payload):
+    def createGlKpi(self, payload):
         """ 
         Create new glaccount kpi
         """
@@ -801,7 +834,7 @@ class Base(object):
             return False
         return self.s.response(r)
 
-    def updateGlaccountKpi(self, kpi_id: int, payload):
+    def updateGlKpi(self, kpi_id: int, payload):
         """ 
         Update glaccount.
         """
@@ -815,7 +848,7 @@ class Base(object):
             return False
         return self.s.response(r)
 
-    def getGlaccountKpiFromName(self, name: str, params={}):
+    def getGlKpiFromName(self, name: str, params={}):
         """read glaccount from name."""
         logging.info(f'Get glaccount kpi from {name}')
         query = {
