@@ -863,3 +863,78 @@ class Base(object):
             logging.error(f'Failed request {rq}')
             return False
         return self.s.response(r)
+    
+    
+    # user
+    def listUser(self, params={}):
+        """
+        Read all user kpi.
+        """
+        logging.info('Reading all user')
+        rq = f'{self.host}/user'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getUser(self, user_id: int, params={}):
+        """Get user details."""
+        logging.info(
+            f'Get user {user_id} with params {params}')
+        rq = f'{self.host}/user/{user_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+ 
+
+     # user
+    
+    # internalnewsletter
+    def listIntnewsletter(self, params={}):
+        """
+        Read all intnewsletter kpi.
+        """
+        logging.info('Reading all intnewsletter')
+        rq = f'{self.host}/intnewsletter'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
+    def getIntnewsletter(self, intnewsletter_id: int, params={}):
+        """Get intnewsletter details."""
+        logging.info(
+            f'Get intnewsletter {intnewsletter_id} with params {params}')
+        rq = f'{self.host}/intnewsletter/{intnewsletter_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.get(rq, params=params)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+ 
+    def updateIntnewsletter(self, intnewsletter_id: int, payload):
+        """ 
+        Update intnewsletter.
+        """
+        logging.info(f'Updateing intnewsletter {intnewsletter_id} - {payload}')
+        rq = f'{self.host}/intnewsletter/{intnewsletter_id}'
+        try:
+            agent = self.s.getAgent()
+            r = agent.post(rq, json=payload)
+        except Exception:
+            logging.error(f'Failed request {rq}')
+            return False
+        return self.s.response(r)
+
