@@ -139,7 +139,7 @@ class Session(object):
 
     def getAgent(self, csrf=None):
         """Retrive API request session."""
-        logging.info('Get request agent')
+        logging.debug('Get request agent')
         if self.__currentAgent:
             logging.debug('Gomma has already setup agent')
             ttl = self.redis.ttl(self.__cacheKey)
