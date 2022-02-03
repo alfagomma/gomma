@@ -137,6 +137,43 @@ class Session(object):
         self.__currentAgent = agent
         return agent
 
+    def __manageRequestResponse(self, r: requests.Response):
+        """ parsing requests response"""
+        logging.debug(
+            f'manage requests response {r.url} ({r.elapsed}) {r.status_code}')
+        # prima cosa: è jsonabile?
+        try:
+            body = r.json()
+        except Exception as e:
+            logging.exception("Unable to parse json")
+            return False
+        # procedo
+        response = {}
+        if r.ok:
+            response['status'] = True
+            response = {**response, **body}
+        else:
+            response['status'] = False
+            __info = {}
+            if 'title' in body:
+                __info['title'] = body['title']
+            if 'type' in body:
+                __info['type'] = body['type']
+            if 'errors' in body:
+                __info['errors'] = body['errors']
+            response['error'] = __info
+        return response
+
+    # def __manageGenericException(self, exc: Exception):
+    #     """ parsing generic Exception """
+    #     logging.debug('manage generic exception')
+    #     response = {
+    #         'status': False,
+    #         'title': str(exc),
+    #         'type': 'sdk-error'
+    #     }
+    #     return response
+
     def getAgent(self, csrf=None):
         """Retrive API request session."""
         logging.debug('Get request agent')
@@ -158,30 +195,6 @@ class Session(object):
             raise Exception('Unknow GOMMA Agent!')
         return agent
 
-    def response(self, r):
+    def response(self, response):
         """ default response object from requests"""
-        fr = {}
-        logging.debug(
-            f'{r.url} ({r.elapsed}) {r.status_code}')
-        # print(r.raise_for_status())
-        body = r.json() if r.text else None
-        if r.ok:
-            fr['status'] = 'ok'
-            if body:
-                fr = {**fr, **body}
-        else:
-            fr['status'] = 'ko'
-            error = {}
-            if body:
-                if 'title' in body:
-                    error['title'] = body['title']
-                if 'type' in body:
-                    error['type'] = body['type']
-                if 'errors' in body:
-                    error['errors'] = body['errors']
-                fr['error'] = error
-            if r.status_code >= 400 and r.status_code < 500:
-                logging.debug(error)
-            else:
-                logging.error(error)
-        return json.dumps(fr)
+        return self.__manageRequestResponse(response)

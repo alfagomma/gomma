@@ -30,17 +30,17 @@ class H2o(object):
         self.s = s
 
     # customer
-    def getCustomers(self, query=None):
+    def getCustomers(self, params: dict = {}):
         """
         Read all customers.
         """
         logging.debug('Getting all customers')
-        rq = '%s/customer' % (self.host)
+        rq = f'{self.host}/customer'
         agent = self.s.getAgent()
-        r = agent.get(rq, params=query)
+        r = agent.get(rq, params=params)
         return self.s.response(r)
 
-    def createCustomer(self, payload):
+    def createCustomer(self, payload: dict):
         """
         Create new customer.
         """
@@ -50,44 +50,44 @@ class H2o(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
-    def getCustomer(self, customer_id: int):
+    def getCustomer(self, customer_id: int, params: dict = {}):
         """
         Get customer by id.
         """
         logging.debug(f'Reading customer {customer_id}...')
         rq = f'{self.host}/customer/{customer_id}'
         agent = self.s.getAgent()
-        r = agent.get(rq)
+        r = agent.get(rq, params=params)
         return self.s.response(r)
 
-    def getCustomerFromErp(self, customer_id, erp_id):
+    def getCustomerFromErp(self, customer_id: int, erp_id: int, params: dict = {}):
         """
         Read customer from erp external ID
         """
         logging.debug(f'Reading customer {customer_id} for erp {erp_id}')
         rq = f'{self.host}/customer/findByErp'
-        payload = {
+        query = {**params, **{
             'erp_id': erp_id,
             'ext_id': customer_id
-        }
+        }}
         agent = self.s.getAgent()
-        r = agent.get(rq, params=payload)
+        r = agent.get(rq, params=query)
         return self.s.response(r)
 
-    def getCustomerFromTax(self, code):
+    def getCustomerFromTax(self, code: str):
         """
         Read customer from tax code.
         """
         logging.debug(f'Reading customer from tax code {code}')
         rq = f'{self.host}/customer/findByTax'
-        payload = {
+        query = {
             'code': code
         }
         agent = self.s.getAgent()
-        r = agent.get(rq, params=payload)
+        r = agent.get(rq, params=query)
         return self.s.response(r)
 
-    def updateCustomer(self, customer_id: int, payload):
+    def updateCustomer(self, customer_id: int, payload: dict):
         """
         Update customer data.
         """
@@ -97,7 +97,7 @@ class H2o(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
-    def createCustomerXerp(self, customer_id: int, payload):
+    def createCustomerXerp(self, customer_id: int, payload: dict):
         """
         Update customer ERP Xrefs.
         """
@@ -123,7 +123,7 @@ class H2o(object):
         return self.s.response(r)
 
     # customer address
-    def createCustomerAddress(self, customer_id: int, payload):
+    def createCustomerAddress(self, customer_id: int, payload: dict):
         """
         Create new customer address
         """
@@ -133,7 +133,7 @@ class H2o(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
-    def updateCustomerAddress(self, customer_id: int, address_id: int, payload):
+    def updateCustomerAddress(self, customer_id: int, address_id: int, payload: dict):
         """
         Update customer address.
         """
@@ -143,17 +143,17 @@ class H2o(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
-    def getCustomerAddresses(self, customer_id: int, query=None):
+    def getCustomerAddresses(self, customer_id: int, params: dict = {}):
         """
         List customer addresses.
         """
         logging.debug(f'Getting all customer {customer_id} addresses')
         rq = '{self.host}/customer/{customer_id}/address'
         agent = self.s.getAgent()
-        r = agent.get(rq, params=query)
+        r = agent.get(rq, params=params)
         return self.s.response(r)
 
-    def getCustomerAddress(self, customer_id: int, address_id: int, params=None):
+    def getCustomerAddress(self, customer_id: int, address_id: int, params: dict = {}):
         """
         Get customer address.
         """
@@ -163,25 +163,22 @@ class H2o(object):
         r = agent.get(rq, params=params)
         return self.s.response(r)
 
-    def getCustomerAddressFromExtId(self, customer_id: int, ext_id: str, query=None):
+    def getCustomerAddressFromExtId(self, customer_id: int, ext_id: str, params: dict = {}):
         """
         List customer addresses.
         """
         logging.debug(
             f'Search customer {customer_id} address ext_id {ext_id}.')
-        payload = {
+        query = {**params, **{
             'ext_id': ext_id
-        }
-        if query:
-            new_payload = dict(item.split("=") for item in query.split('&'))
-            payload = {**payload, **new_payload}
+        }}
         rq = f'{self.host}/customer/{customer_id}/address/findByExtId'
         agent = self.s.getAgent()
-        r = agent.get(rq, params=payload)
+        r = agent.get(rq, params=query)
         return self.s.response(r)
 
     # competitor
-    def createCompetitor(self, payload):
+    def createCompetitor(self, payload: dict):
         """
         Create new competitor.
         """
@@ -191,70 +188,25 @@ class H2o(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
-    def getCompetitor(self, competitor_id: int):
+    def getCompetitor(self, competitor_id: int, params: dict = {}):
         """
         Get competitor by id.
         """
         logging.debug(f'Reading competitor {competitor_id}...')
         rq = f'{self.host}/competitor/{competitor_id}'
         agent = self.s.getAgent()
-        r = agent.get(rq)
+        r = agent.get(rq, params=params)
         return self.s.response(r)
 
     # invoice
-    def createInvoice(self, payload):
-        """
-        Create new invoice.
-        """
-        logging.debug(f'Creating invoice {payload}')
-        rq = f'{self.host}/invoice'
-        agent = self.s.getAgent()
-        r = agent.post(rq, json=payload)
-        return self.s.response(r)
-
-    def getinvoices(self, query=None):
-        """
-        Read all invoices.
-        """
-        logging.debug('Getting invoices.')
-        rq = f'{self.host}/invoice'
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=query)
-        return self.s.response(r)
-
-    def getInvoice(self, invoice_id: int):
-        """
-        Get invoice by id
-        """
-        logging.debug(f'Reading invoice {invoice_id}..')
-        rq = f'{self.host}/invoice/{invoice_id}'
-        agent = self.s.getAgent()
-        r = agent.get(rq)
-        return self.s.response(r)
-
-    def getInvoiceFromErp(self, erp_id: int, ext_id):
-        """
-        Read invoice from erp external ID.
-        """
-        logging.debug(f'Reading invoice {ext_id} for erp {erp_id}')
-        rq = f'{self.host}/invoice/findByErp'
-        payload = {
-            'erp_id': erp_id,
-            'ext_id': ext_id
-        }
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=payload)
-        return self.s.response(r)
-
-    # invoice type
-    def getInvoiceTypes(self, query=None):
+    def getInvoiceTypes(self, params: dict = {}):
         """
         Read all invoice types.
         """
         logging.debug('Getting invoice types.')
         rq = f'{self.host}/invoice/type'
         agent = self.s.getAgent()
-        r = agent.get(rq, params=query)
+        r = agent.get(rq, params=params)
         return self.s.response(r)
 
     def getInvoiceTypeFromName(self, name: str):
@@ -270,7 +222,7 @@ class H2o(object):
         r = agent.get(rq, params=payload)
         return self.s.response(r)
 
-    def createInvoiceType(self, payload):
+    def createInvoiceType(self, payload: dict):
         """
         Create new invoice type.
         """
