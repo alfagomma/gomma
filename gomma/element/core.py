@@ -7,7 +7,7 @@ Element SDK
 """
 
 __author__ = "Davide Pellegrino"
-__version__ = "2.2.1"
+__version__ = "3.1.1"
 __date__ = "2022-02-02"
 
 import logging

@@ -35,7 +35,7 @@ class Hook(object):
         self.s = s
 
     # ERP
-    def erp_sap_material(self, payload):
+    def erp_sap_material(self, payload: dict):
         """
         Call erp sap worker queue
         """
@@ -46,7 +46,7 @@ class Hook(object):
         return self.s.response(r)
 
     # ERP SAP CUSTOMER
-    def erp_sap_customer(self, payload):
+    def erp_sap_customer(self, payload: dict):
         """
         Call erp sap customer worker queue
         """
@@ -57,7 +57,7 @@ class Hook(object):
         return self.s.response(r)
 
     # ERP SAP SUPPLIER
-    def erp_sap_supplier(self, payload):
+    def erp_sap_supplier(self, payload: dict):
         """
         Call erp sap supplier worker queue
         """

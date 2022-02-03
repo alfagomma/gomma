@@ -12,10 +12,11 @@ import os
 
 logger = logging.getLogger(__name__)
 
+
 class Cache(object):
     """ Cache utilities."""
 
-    cachePath= '.cache/gomma'    
+    cachePath = '.cache/gomma'
 
     def __init__(self):
         """Init new Cache utility."""
@@ -24,9 +25,9 @@ class Cache(object):
             logging.debug(f'Creating cache path {self.cachePath}')
             os.makedirs(self.cachePath)
 
-    def read(self, name):
+    def read(self, name: str):
         """ Recupero il dato in cache. """
-        logging.info(f'Init read cache {name}...')        
+        logging.info(f'Init read cache {name}...')
         cachekey = self.__createCacheKey(name)
         if not self.__isCache(cachekey):
             logging.debug(f'{cachekey} is not cached!')
@@ -34,7 +35,7 @@ class Cache(object):
         try:
             f = open(f'{self.cachePath}/{cachekey}', 'r')
             fromcache = f.read()
-            f.close()            
+            f.close()
         except IOError:
             logging.exception("Exception occurred")
             return False
@@ -62,7 +63,7 @@ class Cache(object):
         Elimino tutti i file di cache.
         """
         logging.info('Init cleaning cache dir ...')
-        filelist = [ f for f in os.listdir(self.cachePath) ]
+        filelist = [f for f in os.listdir(self.cachePath)]
         for f in filelist:
             os.remove(os.path.join(self.cachePath, f))
         return True
@@ -70,10 +71,10 @@ class Cache(object):
     def __createCacheKey(self, name):
         """Genera una chiave cache """
         __tmp = f'{json.dumps(name)}'
-        cachekey = f'{hashlib.md5(__tmp.encode()).hexdigest()}.tmp'            
+        cachekey = f'{hashlib.md5(__tmp.encode()).hexdigest()}.tmp'
         return cachekey
-    
+
     def __isCache(self, cachekey):
         """ verifica esistenza file in cache. """
         logging.debug(f'Checking {cachekey} key..')
-        return os.path.isfile(f'{self.cachePath}/{cachekey}')        
+        return os.path.isfile(f'{self.cachePath}/{cachekey}')

@@ -7,8 +7,8 @@ H2o SDK
 """
 
 __author__ = "Davide Pellegrino"
-__version__ = "1.1.4"
-__date__ = "2021-05-31"
+__version__ = "3.1.4"
+__date__ = "2022-02-02"
 
 import logging
 
