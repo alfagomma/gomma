@@ -3,26 +3,26 @@
 # -*- coding: utf-8 -*-
 
 """
-H2O test
+ELEMENT test
 """
 
 import logging
 
-from gomma.h2o.core import H2o
+from gomma.element.core import Element
 
 
 class test():
-    """test h2o"""
+    """test element"""
 
     def __init__(self, profile_name):
         """ init """
         logging.debug(f'Init test {profile_name}')
-        self.h = H2o(profile_name)
+        self.h = Element(profile_name)
 
-    def customer(self):
-        """test customer"""
+    def item(self):
+        """test item"""
         try:
-            r = self.h.getCustomers({'take': 1})
+            r = self.h.attachItemErp(7, {'erp_id': 1, 'code': '2307324'})
         except Exception as e:
             print(e)
             return False
