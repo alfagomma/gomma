@@ -143,6 +143,17 @@ class H2o(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
+    def patchCustomerAddress(self, customer_id: int, address_id: int, payload: dict):
+        """
+        Patch customer address data.
+        """
+        logging.info(
+            f'Patching customer {customer_id} address {address_id} with {payload}')
+        rq = f'{self.host}/customer/{customer_id}/address/{address_id}'
+        agent = self.s.getAgent()
+        r = agent.patch(rq, json=payload)
+        return self.s.response(r)
+
     def getCustomerAddresses(self, customer_id: int, params: dict = {}):
         """
         List customer addresses.

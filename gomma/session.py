@@ -142,27 +142,29 @@ class Session(object):
         """ parsing requests response"""
         logging.debug(
             f'manage requests response {r.url} ({r.elapsed}) {r.status_code}')
-        # prima cosa: è jsonabile?
-        try:
-            body = r.json()
-        except Exception as e:
-            logging.exception("Unable to parse json")
-            return False
-        # procedo
-        response = {}
-        if r.ok:
-            response['status'] = True
-            response = {**response, **body}
-        else:
-            response['status'] = False
-            __info = {}
-            if 'title' in body:
-                __info['title'] = body['title']
-            if 'type' in body:
-                __info['type'] = body['type']
-            if 'errors' in body:
-                __info['errors'] = body['errors']
-            response['error'] = __info
+        response = {
+            'status': r.ok == True
+        }
+        if r.text:
+            try:
+                body = r.json()
+            except Exception as e:
+                logging.exception("Unable to parse json")
+                response['status'] = False
+                response['error'] = {'title': 'Unable to parse json'}
+                return response
+
+            if response.get('status'):
+                response = {**response, **body}
+            else:
+                __info = {}
+                if 'title' in body:
+                    __info['title'] = body['title']
+                if 'type' in body:
+                    __info['type'] = body['type']
+                if 'errors' in body:
+                    __info['errors'] = body['errors']
+                response['error'] = __info
         return response
 
     # def __manageGenericException(self, exc: Exception):
