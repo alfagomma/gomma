@@ -145,26 +145,27 @@ class Session(object):
         response = {
             'status': r.ok == True
         }
-        if r.text:
-            try:
-                body = r.json()
-            except Exception as e:
-                logging.exception("Unable to parse json")
-                response['status'] = False
-                response['error'] = {'title': 'Unable to parse json'}
-                return response
+        if not r.text:
+            return response
+        try:
+            body = r.json()
+        except Exception as e:
+            logging.exception("Unable to parse json")
+            response['status'] = False
+            response['error'] = {'title': 'Unable to parse json'}
+            return response
 
-            if response.get('status'):
-                response = {**response, **body}
-            else:
-                __info = {}
-                if 'title' in body:
-                    __info['title'] = body['title']
-                if 'type' in body:
-                    __info['type'] = body['type']
-                if 'errors' in body:
-                    __info['errors'] = body['errors']
-                response['error'] = __info
+        if response.get('status'):
+            response = {**response, **body}
+        else:
+            __info = {}
+            if 'title' in body:
+                __info['title'] = body['title']
+            if 'type' in body:
+                __info['type'] = body['type']
+            if 'errors' in body:
+                __info['errors'] = body['errors']
+            response['error'] = __info
         return response
 
     # def __manageGenericException(self, exc: Exception):
