@@ -191,7 +191,7 @@ class Base(object):
         Get supplier from erp.
         """
         logging.info(f'Search supplier from erp {erp_id} code {code}.')
-        query = {**params, **{'erp': erp_id, 'code': code}}
+        query = {**params, **{'erp': erp_id, 'code': f'{code}'}}
         rq = f'{self.host}/supplier/findByErp'
         agent = self.s.getAgent()
         r = agent.get(rq, params=query)
@@ -263,17 +263,13 @@ class Base(object):
         r = agent.get(rq, params=params)
         return self.s.response(r)
 
-    def supplierAttachErp(self, supplier_id: int, erp_id: int, code: str):
+    def supplierAttachErp(self, supplier_id: int, payload: dict):
         """
         Attach erp to supplier.
         """
         logging.info(
-            f'Attaching erp {erp_id} code {code} to supplier {supplier_id}.')
+            f'Attaching erp {payload} to supplier {supplier_id}.')
         rq = f'{self.host}/supplier/{supplier_id}/erp'
-        payload = {
-            'erp_id': erp_id,
-            'code': code
-        }
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
         return self.s.response(r)
