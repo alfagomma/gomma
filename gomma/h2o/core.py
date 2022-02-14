@@ -97,12 +97,12 @@ class H2o(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
-    def createCustomerXerp(self, customer_id: int, payload: dict):
+    def createCustomerErp(self, customer_id: int, payload: dict):
         """
         Update customer ERP Xrefs.
         """
         logging.debug(f'Init creating customer {customer_id} ERP xref ...')
-        rq = f'{self.host}/customer/{customer_id}/xerp'
+        rq = f'{self.host}/customer/{customer_id}/erp'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
         return self.s.response(r)
