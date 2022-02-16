@@ -614,79 +614,81 @@ class Element(object):
         r = agent.get(rq, params=params)
         return self.s.response(r)
 
-    def createTree(self, catalog_id: int, payload: dict):
-        """ Create new catalog tree. """
-        logging.debug(f'Creating new catalog {catalog_id} tree {payload}')
-        rq = f'{self.host}/catalog/{catalog_id}/tree'
+    def createChapter(self, catalog_id: int, payload: dict):
+        """ Create new catalog chapter. """
+        logging.debug(f'Creating new catalog {catalog_id} chapter {payload}')
+        rq = f'{self.host}/catalog/{catalog_id}/chapter'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
-    def getTree(self, catalog_id: int, tree_id: int, params: dict = {}):
-        """ Get catalog tree by ID """
-        logging.debug(f'Get catalog tree {catalog_id}')
-        rq = f'{self.host}/catalog/{catalog_id}/tree/{tree_id}'
+    def getChapter(self, catalog_id: int, chapter_id: int, params: dict = {}):
+        """ Get catalog chapter by ID """
+        logging.debug(f'Get catalog chapter {catalog_id}')
+        rq = f'{self.host}/catalog/{catalog_id}/chapter/{chapter_id}'
         agent = self.s.getAgent()
         r = agent.get(rq, params=params)
         return self.s.response(r)
 
-    def getTreeByName(self, catalog_id: int, name: str, params: dict = {}):
-        """ Get catalog tree by NAME """
-        logging.debug(f'Get catalog tree {name}')
-        rq = f'{self.host}/catalog/{catalog_id}/tree/findByName'
+    def getChapterByName(self, catalog_id: int, name: str, params: dict = {}):
+        """ Get catalog chapter by NAME """
+        logging.debug(f'Get catalog chapter {name}')
+        rq = f'{self.host}/catalog/{catalog_id}/chapter/findByName'
         query = {**params, **{'name': name}}
         agent = self.s.getAgent()
         r = agent.get(rq, params=query)
         return self.s.response(r)
 
-    def getTreeLeaves(self, catalog_id: int, tree_id: int, params: dict = {}):
-        """ Get catalog tree leaves """
-        logging.debug(f'Get catalog tree {tree_id} into catalog {catalog_id}')
-        rq = f'{self.host}/catalog/{catalog_id}/tree/{tree_id}/leaf'
+    def getChapterLeaves(self, catalog_id: int, chapter_id: int, params: dict = {}):
+        """ Get catalog chapter leaves """
+        logging.debug(
+            f'Get catalog chapter {chapter_id} into catalog {catalog_id}')
+        rq = f'{self.host}/catalog/{catalog_id}/chapter/{chapter_id}/leaf'
         agent = self.s.getAgent()
         r = agent.get(rq, params=params)
         return self.s.response(r)
 
-    def createLeaf(self, catalog_id: int, tree_id: int, payload: dict):
-        """ Create new catalog tree leaf. """
+    def createLeaf(self, catalog_id: int, chapter_id: int, payload: dict):
+        """ Create new catalog chapter leaf. """
         logging.debug(
-            f'Creating new catalog {catalog_id} tree {tree_id} leaf {payload}')
-        rq = f'{self.host}/catalog/{catalog_id}/tree/{tree_id}/leaf'
+            f'Creating new catalog {catalog_id} chapter {chapter_id} leaf {payload}')
+        rq = f'{self.host}/catalog/{catalog_id}/chapter/{chapter_id}/leaf'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
-    def getTreeLeaf(self, catalog_id: int, tree_id: int, leaf_id: int, params: dict = {}):
-        """ Get catalog tree leaf ID """
-        logging.debug(f'Get catalog tree {catalog_id}')
-        rq = f'{self.host}/catalog/{catalog_id}/tree/{tree_id}/leaf/{leaf_id}'
+    def getChapterLeaf(self, catalog_id: int, chapter_id: int, leaf_id: int, params: dict = {}):
+        """ Get catalog chapter leaf ID """
+        logging.debug(f'Get catalog chapter {catalog_id}')
+        rq = f'{self.host}/catalog/{catalog_id}/chapter/{chapter_id}/leaf/{leaf_id}'
         agent = self.s.getAgent()
         r = agent.get(rq, params=params)
         return self.s.response(r)
 
-    def getTreeLeafByFamilyCode(self, catalog_id: int, tree_id: int, code: str, params: dict = {}):
-        """ Get catalog tree leaf by family code. """
-        logging.debug(f'Get catalog tree {tree_id} leaf by family code {code}')
-        rq = f'{self.host}/catalog/{catalog_id}/tree/{tree_id}/leaf/findByFamilyCode'
+    def getChapterLeafByFamilyCode(self, catalog_id: int, chapter_id: int, code: str, params: dict = {}):
+        """ Get catalog chapter leaf by family code. """
+        logging.debug(
+            f'Get catalog chapter {chapter_id} leaf by family code {code}')
+        rq = f'{self.host}/catalog/{catalog_id}/chapter/{chapter_id}/leaf/findByFamilyCode'
         query = {**params, **{'code': code}}
         agent = self.s.getAgent()
         r = agent.get(rq, params=query)
         return self.s.response(r)
 
-    def getLeafItems(self, catalog_id: int, tree_id: int, leaf_id: int, params: dict = {}):
-        """ Get catalog tree leaves """
+    def getLeafItems(self, catalog_id: int, chapter_id: int, leaf_id: int, params: dict = {}):
+        """ Get catalog chapter leaves """
         logging.debug(
-            f'Get catalog {catalog_id} tree {tree_id} leaf {leaf_id} items')
-        rq = f'{self.host}/catalog/{catalog_id}/tree/{tree_id}/leaf/{leaf_id}/item'
+            f'Get catalog {catalog_id} chapter {chapter_id} leaf {leaf_id} items')
+        rq = f'{self.host}/catalog/{catalog_id}/chapter/{chapter_id}/leaf/{leaf_id}/item'
         agent = self.s.getAgent()
         r = agent.get(rq, params=params)
         return self.s.response(r)
 
-    def attachLeafItems(self, catalog_id: int, tree_id: int, leaf_id: int, payload: dict):
+    def attachLeafItems(self, catalog_id: int, chapter_id: int, leaf_id: int, payload: dict):
         """ attach leaf items. """
         logging.debug(
-            f'Attach items {payload} to catalog {catalog_id} tree {tree_id} leaf {leaf_id}')
-        rq = f'{self.host}/catalog/{catalog_id}/tree/{tree_id}/leaf/{leaf_id}/item'
+            f'Attach items {payload} to catalog {catalog_id} chapter {chapter_id} leaf {leaf_id}')
+        rq = f'{self.host}/catalog/{catalog_id}/chapter/{chapter_id}/leaf/{leaf_id}/item'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
         return self.s.response(r)
