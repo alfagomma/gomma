@@ -605,6 +605,15 @@ class Element(object):
         r = agent.get(rq, params=params)
         return self.s.response(r)
 
+    def getCatalogHierarchy(self, catalog_id: int, params: dict = {}):
+        """ Get catalog hiearchy """
+        logging.debug(
+            f'Get catalog {catalog_id} hierarchy with params {params}')
+        rq = f'{self.host}/catalog/{catalog_id}/hierarchy'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
     def createTree(self, catalog_id: int, payload: dict):
         """ Create new catalog tree. """
         logging.debug(f'Creating new catalog {catalog_id} tree {payload}')

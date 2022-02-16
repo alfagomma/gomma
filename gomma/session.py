@@ -156,7 +156,11 @@ class Session(object):
             return response
 
         if response.get('status'):
-            response = {**response, **body}
+            try:
+                response = {**response, **body}
+            except:
+                logging.exception("Unable to merge")
+                return response
         else:
             __info = {}
             if 'title' in body:
