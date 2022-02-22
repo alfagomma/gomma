@@ -149,28 +149,6 @@ class Element(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
-    def itemAddCad(self, item_id: int, localFile):
-        """
-        Aggiunge un file cad all'item.
-        """
-        logging.debug(f'Add {localFile} to {item_id}')
-        rq = f'{self.host}/item/{item_id}/cad'
-        fin = open(localFile, 'rb')
-        files = {'src': fin}
-        agent = self.s.getAgent()
-        r = agent.post(rq, files=files)
-        return self.s.response(r)
-
-    def itemDeleteCad(self, item_id: int, cad_id: int):
-        """
-        Elimina un file cad dall'item.
-        """
-        logging.debug(f'Deleting cad {cad_id} at item {item_id}')
-        rq = f'{self.host}/item/{item_id}/cad/{cad_id}'
-        agent = self.s.getAgent()
-        r = agent.delete(rq)
-        return self.s.response(r)
-
     def itemAddCompetitor(self, item_id: int, payload: dict):
         """ attach competitor to the item"""
         logging.debug(f'Add xref item {item_id} {payload}')
@@ -386,7 +364,6 @@ class Element(object):
         rq = f'{self.host}/family/{family_id}/cover'
         fin = open(localFile, 'rb')
         files = {'src': fin}
-        # files = {'src': ('test.cad', open(filepath, 'rb'), 'image/png')}
         agent = self.s.getAgent()
         r = agent.post(rq, files=files)
         return self.s.response(r)
@@ -960,4 +937,15 @@ class Element(object):
         rq = f'{self.host}/norm/{norm_id}'
         agent = self.s.getAgent()
         r = agent.patch(rq, json=payload)
+        return self.s.response(r)
+
+    # CAD 3D MODEL
+    def createCad(self, item_id: int, file: str):
+        """ create new cad file. """
+        logging.debug(f'Creating cad for item {item_id}')
+        rq = f'{self.host}/cad'
+        payload = {'item_id': item_id}
+        files = {'src': open(file, 'rb')}
+        agent = self.s.getAgent()
+        r = agent.post(rq, data=payload, files=files)
         return self.s.response(r)
