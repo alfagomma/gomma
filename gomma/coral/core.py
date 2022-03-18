@@ -32,16 +32,6 @@ class Coral(object):
 
     # supplier
 
-    def supplier_read(self, supplier_id: int, params: dict = {}):
-        """
-        Read single supplier.
-        """
-        logging.debug(f'Get supplier {supplier_id}')
-        rq = f'{self.host}/supplier/{supplier_id}'
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=params)
-        return self.s.response(r)
-
     def supplier_list(self, params: dict = {}):
         """
         Read all suppliers.
@@ -73,6 +63,16 @@ class Coral(object):
         r = agent.get(rq, params=query)
         return self.s.response(r)
 
+    def supplier_by_id(self, supplier_id: int, params: dict = {}):
+        """
+        Read single supplier.
+        """
+        logging.debug(f'Get supplier {supplier_id}')
+        rq = f'{self.host}/supplier/{supplier_id}'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
     def supplier_update(self, supplier_id: int, payload: dict):
         """
         Update supplier.
@@ -94,6 +94,7 @@ class Coral(object):
         return self.s.response(r)
 
     # supplier company
+
     def supplier_list_company(self, supplier_id: int, params: dict = {}):
         """
         Read supplier companies.
@@ -131,40 +132,54 @@ class Coral(object):
 
     # supplier xerp
 
-    def supplier_list_erp(self, supplier_id: int, params: dict = {}):
+    def supplier_attach_erp(self, supplier_id: int, erp_id: int, ext_id: str):
         """
-        Read supplier erps.
-        """
-        logging.debug(f'Reading supplier {supplier_id} erps')
-        rq = f'{self.host}/supplier/{supplier_id}/erp'
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=params)
-        return self.s.response(r)
-
-    def supplier_attach_erp(self, supplier_id: int, payload: dict):
-        """
-        Attach erp to supplier.
+        Add new supplier erp xref.
         """
         logging.debug(
-            f'Attaching erp {payload} to supplier {supplier_id}.')
+            f'Add supplier {supplier_id} ERP {erp_id} xref {ext_id} ...')
         rq = f'{self.host}/supplier/{supplier_id}/erp'
+        payload = {'erp_id': erp_id, 'ext_id': f'{ext_id}'}
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
     def supplier_detach_erp(self, supplier_id: int, erp_id: int):
         """
-        Detach erp to supplier.
+        Remove supplier erp xref.
         """
-        logging.debug(f'Detaching erp {erp_id} to supplier {supplier_id}.')
+        logging.debug(f'Remove supplier {supplier_id} ERP {erp_id} ...')
         rq = f'{self.host}/supplier/{supplier_id}/erp/{erp_id}'
+        agent = self.s.getAgent()
+        r = agent.delete(rq)
+        return self.s.response(r)
+
+
+    # supplier account
+    def supplier_create_account(self, supplier_id: int, payload: dict):
+        """
+        Add new supplier account.
+        """
+        logging.debug(f'Add supplier {supplier_id} account {payload} ...')
+        rq = f'{self.host}/supplier/{supplier_id}/account'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def delete_supplier_account(self, supplier_id: int, account_id: int):
+        """
+        Remove supplier account.
+        """
+        logging.debug(
+            f'Remove supplier {supplier_id} account {account_id} ...')
+        rq = f'{self.host}/supplier/{supplier_id}/account/{account_id}'
         agent = self.s.getAgent()
         r = agent.delete(rq)
         return self.s.response(r)
 
     # category
 
-    def supplier_category_read(self, category_id: int, params: dict = {}):
+    def supplier_category_by_id(self, category_id: int, params: dict = {}):
         """
         Read single category.
         """
@@ -205,20 +220,13 @@ class Coral(object):
         return self.s.response(r)
 
     # warehouse
+
     def warehouse_list(self, params: dict = {}):
         """
         Read all warehouses.
         """
         logging.debug('Reading all warehouses')
         rq = f'{self.host}/warehouse'
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=params)
-        return self.s.response(r)
-
-    def warehouse_read(self, warehouse_id: int, params: dict = {}):
-        """Get warehouse details."""
-        logging.debug(f'Get warehouse {warehouse_id} with params {params}')
-        rq = f'{self.host}/warehouse/{warehouse_id}'
         agent = self.s.getAgent()
         r = agent.get(rq, params=params)
         return self.s.response(r)
@@ -241,6 +249,14 @@ class Coral(object):
         rq = f'{self.host}/warehouse/{warehouse_id}'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def warehouse_by_id(self, warehouse_id: int, params: dict = {}):
+        """Get warehouse details."""
+        logging.debug(f'Get warehouse {warehouse_id} with params {params}')
+        rq = f'{self.host}/warehouse/{warehouse_id}'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
         return self.s.response(r)
 
     def warehouse_by_name(self, name: str, params: dict = {}):
