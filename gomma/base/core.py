@@ -154,7 +154,7 @@ class Base(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
-    # supplier
+    # supplier !!! DEPRECATED !!!!
 
     def getSupplier(self, supplier_id: int, params: dict = {}):
         """
@@ -217,7 +217,7 @@ class Base(object):
         r = agent.patch(rq, json=payload)
         return self.s.response(r)
 
-    # supplier company
+    # supplier company  !!! DEPRECATED !!!!
     def listSupplierCompanies(self, supplier_id: int, params: dict = {}):
         """
         Read supplier companies.
@@ -284,7 +284,7 @@ class Base(object):
         r = agent.delete(rq)
         return self.s.response(r)
 
-    # category
+    # category  !!! DEPRECATED !!!!
 
     def getSupplierCategory(self, category_id: int, params: dict = {}):
         """
@@ -326,7 +326,7 @@ class Base(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
-    # warehouse
+    # warehouse  !!! DEPRECATED !!!!
     def listWarehouses(self, params: dict = {}):
         """
         Read all warehouses.
