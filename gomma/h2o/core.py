@@ -7,8 +7,8 @@ H2o SDK
 """
 
 __author__ = "Davide Pellegrino"
-__version__ = "3.1.4"
-__date__ = "2022-02-02"
+__version__ = "3.1.5"
+__date__ = "2022-03-10"
 
 import logging
 
@@ -44,7 +44,7 @@ class H2o(object):
         """
         Create new customer.
         """
-        logging.debug('Init creating customer...')
+        logging.debug(f'Init creating customer {payload}...')
         rq = f'{self.host}/customer'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
@@ -60,26 +60,25 @@ class H2o(object):
         r = agent.get(rq, params=params)
         return self.s.response(r)
 
-    def getCustomerFromErp(self, customer_id: int, erp_id: int, params: dict = {}):
-        """
-        Read customer from erp external ID
-        """
-        logging.debug(f'Reading customer {customer_id} for erp {erp_id}')
-        rq = f'{self.host}/customer/findByErp'
-        query = {**params, **{
-            'erp_id': erp_id,
-            'ext_id': customer_id
-        }}
-        agent = self.s.getAgent()
-        r = agent.get(rq, params=query)
-        return self.s.response(r)
-
     def getCustomerFromTax(self, code: str):
         """
         Read customer from tax code.
         """
         logging.debug(f'Reading customer from tax code {code}')
         rq = f'{self.host}/customer/findByTax'
+        query = {
+            'code': code
+        }
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=query)
+        return self.s.response(r)
+
+    def get_customer_by_code(self, code: str):
+        """
+        Read customer by tax or business code.
+        """
+        logging.debug(f'Reading customer by code {code}')
+        rq = f'{self.host}/customer/findByCode'
         query = {
             'code': code
         }
@@ -97,14 +96,83 @@ class H2o(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
+    def patch_customer(self, customer_id: int, payload: dict):
+        """
+        Patch customer.
+        """
+        logging.debug(f'Patching customer {customer_id}...')
+        rq = f'{self.host}/customer/{customer_id}'
+        agent = self.s.getAgent()
+        r = agent.patch(rq, json=payload)
+        return self.s.response(r)
+
+    # erp
+    def getCustomerFromErp(self, customer_id: int, erp_id: int, params: dict = {}):
+        """
+        Read customer from erp external ID
+        """
+        logging.debug(f'Reading customer {customer_id} for erp {erp_id}')
+        rq = f'{self.host}/customer/findByErp'
+        query = {**params, **{
+            'erp_id': erp_id,
+            'ext_id': customer_id
+        }}
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=query)
+        return self.s.response(r)
+
     def createCustomerErp(self, customer_id: int, payload: dict):
         """
-        Update customer ERP Xrefs.
+        Update customer ERP Xrefs. | DEPRECATED
         """
         logging.debug(f'Init creating customer {customer_id} ERP xref ...')
         rq = f'{self.host}/customer/{customer_id}/erp'
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def attach_customer_erp(self, customer_id: int, erp_id: int, ext_id: str):
+        """
+        Add new customer erp xref.
+        """
+        logging.debug(
+            f'Add customer {customer_id} ERP {erp_id} xref {ext_id} ...')
+        rq = f'{self.host}/customer/{customer_id}/erp'
+        payload = {'erp_id': erp_id, 'ext_id': f'{ext_id}'}
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def detach_customer_erp(self, customer_id: int, erp_id: int):
+        """
+        Remove customer erp xref.
+        """
+        logging.debug(f'Remove customer {customer_id} ERP {erp_id} ...')
+        rq = f'{self.host}/customer/{customer_id}/erp/{erp_id}'
+        agent = self.s.getAgent()
+        r = agent.delete(rq)
+        return self.s.response(r)
+
+    # account
+    def create_customer_account(self, customer_id: int, payload: dict):
+        """
+        Add new customer account.
+        """
+        logging.debug(f'Add customer {customer_id} account {payload} ...')
+        rq = f'{self.host}/customer/{customer_id}/account'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def delete_customer_account(self, customer_id: int, account_id: int):
+        """
+        Remove customer account.
+        """
+        logging.debug(
+            f'Remove customer {customer_id} account {account_id} ...')
+        rq = f'{self.host}/customer/{customer_id}/account/{account_id}'
+        agent = self.s.getAgent()
+        r = agent.delete(rq)
         return self.s.response(r)
 
     # customer markets
@@ -188,7 +256,27 @@ class H2o(object):
         r = agent.get(rq, params=query)
         return self.s.response(r)
 
+    # customer sales agent
+    def customer_add_agent(self, customer_id: int, payload: dict):
+        """Add sales agent user details."""
+        logging.debug(
+            f'Add agent to customer {customer_id} with {payload}')
+        rq = f'{self.host}/customer/{customer_id}/agent'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def customer_remove_agent(self, customer_id: int, agent_id: int):
+        """Remove customer sales agent."""
+        logging.debug(
+            f'Remove agent {agent_id} to customer {customer_id}')
+        rq = f'{self.host}/customer/{customer_id}/agent/{agent_id}'
+        agent = self.s.getAgent()
+        r = agent.delete(rq, json=payload)
+        return self.s.response(r)
+
     # competitor
+
     def createCompetitor(self, payload: dict):
         """
         Create new competitor.

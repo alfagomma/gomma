@@ -646,6 +646,16 @@ class Base(object):
         r = agent.get(rq, params=params)
         return self.s.response(r)
 
+    def getUserByEmail(self, email: str, params: dict = {}):
+        """Get user details."""
+        logging.info(
+            f'Get user by email {email} with params {params}')
+        query = {**params, **{'email': email}}
+        rq = f'{self.host}/user/findByEmail'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=query)
+        return self.s.response(r)        
+
     # internalnewsletter
 
     def listIntnewsletter(self, params: dict = {}):
