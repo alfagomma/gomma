@@ -139,7 +139,7 @@ class Coral(object):
         logging.debug(
             f'Add supplier {supplier_id} ERP {erp_id} xref {ext_id} ...')
         rq = f'{self.host}/supplier/{supplier_id}/erp'
-        payload = {'erp_id': erp_id, 'ext_id': f'{ext_id}'}
+        payload = {'erp_id': erp_id, 'code': f'{ext_id}'}
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
         return self.s.response(r)
@@ -154,8 +154,8 @@ class Coral(object):
         r = agent.delete(rq)
         return self.s.response(r)
 
-
     # supplier account
+
     def supplier_create_account(self, supplier_id: int, payload: dict):
         """
         Add new supplier account.
