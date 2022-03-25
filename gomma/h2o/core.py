@@ -272,7 +272,7 @@ class H2o(object):
             f'Remove agent {agent_id} to customer {customer_id}')
         rq = f'{self.host}/customer/{customer_id}/agent/{agent_id}'
         agent = self.s.getAgent()
-        r = agent.delete(rq, json=payload)
+        r = agent.delete(rq)
         return self.s.response(r)
 
     # competitor
