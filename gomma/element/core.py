@@ -7,8 +7,8 @@ Element SDK
 """
 
 __author__ = "Davide Pellegrino"
-__version__ = "3.1.1"
-__date__ = "2022-02-02"
+__version__ = "3.1.2"
+__date__ = "2022-03-25"
 
 import logging
 
@@ -274,7 +274,85 @@ class Element(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
+    # application
+    def application_list(self, params: dict = {}):
+        """
+        Read all applications.
+        """
+        logging.debug('Getting all the applications')
+        rq = f'{self.host}/application'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
+    def application_create(self, payload: dict):
+        """
+        Create new application.
+        """
+        logging.debug(f'Creating application {payload}')
+        rq = f'{self.host}/application'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def application_by_id(self, application_id: int, params: dict = {}):
+        """
+        Read single application.
+        """
+        logging.debug(f'Get application {application_id}')
+        rq = f'{self.host}/application/{application_id}'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
+    def application_by_name(self, name: str, params: dict = {}):
+        """
+        Read single application by name.
+        """
+        logging.debug(f'Get application name {name}')
+        rq = f'{self.host}/application/findByName'
+        query = {**params, **{'name': name}}
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=query)
+        return self.s.response(r)
+
+    def application_update(self, application_id: int, payload: dict):
+        """
+        Update application.
+        """
+        logging.debug(f'Updating application {application_id} with {payload}')
+        rq = f'{self.host}/application/{application_id}'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def application_attach_market(self, application_id: int, market_id: int):
+        """
+        Attach market to application.
+        """
+        logging.debug(
+            f'Attaching market {market_id} to application {application_id}.')
+        rq = f'{self.host}/application/{application_id}/market'
+        payload = {
+            'market_id': market_id
+        }
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def application_detach_market(self, application_id: int, market_id: int):
+        """
+        Remove application market id.
+        """
+        logging.debug(
+            f'Remove application {application_id} market {market_id} ...')
+        rq = f'{self.host}/application/{application_id}/market/{market_id}'
+        agent = self.s.getAgent()
+        r = agent.delete(rq)
+        return self.s.response(r)
+
     # family
+
     def createFamily(self, payload: dict):
         """ crea una nuova famiglia """
         logging.debug(f'Creating new family {payload}')
