@@ -147,29 +147,33 @@ class Session(object):
         }
         if not r.text:
             return response
-        try:
-            body = r.json()
-        except Exception as e:
-            logging.exception("Unable to parse json")
-            response['status'] = False
-            response['error'] = {'title': 'Unable to parse json'}
-            return response
-
-        if response.get('status'):
+        content = r.headers.get('content-type')
+        if 'text/html' in content:
+            return r.text
+        elif 'application/json' in content:
             try:
-                response = {**response, **body}
-            except:
-                logging.exception("Unable to merge")
+                body = r.json()
+            except Exception as e:
+                logging.exception("Unable to parse json")
+                response['status'] = False
+                response['error'] = {'title': 'Unable to parse response'}
                 return response
-        else:
-            __info = {}
-            if 'title' in body:
-                __info['title'] = body['title']
-            if 'type' in body:
-                __info['type'] = body['type']
-            if 'errors' in body:
-                __info['errors'] = body['errors']
-            response['error'] = __info
+
+            if response.get('status'):
+                try:
+                    response = {**response, **body}
+                except:
+                    logging.exception("Unable to merge")
+                    return response
+            else:
+                __info = {}
+                if 'title' in body:
+                    __info['title'] = body['title']
+                if 'type' in body:
+                    __info['type'] = body['type']
+                if 'errors' in body:
+                    __info['errors'] = body['errors']
+                response['error'] = __info
         return response
 
     # def __manageGenericException(self, exc: Exception):
