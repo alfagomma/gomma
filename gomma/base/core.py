@@ -686,3 +686,13 @@ class Base(object):
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
         return self.s.response(r)
+
+    # template
+    def getTemplateRaw(self, payload: dict = {}):
+        """Get template raw."""
+        logging.info(
+            f'Get template raw params {payload}')
+        rq = f'{self.host}/template/raw'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
