@@ -840,7 +840,47 @@ class Element(object):
         r = agent.delete(rq)
         return self.s.response(r)
 
+    # crimptable matrices
+    def createCrimptableMatrix(self, table_id: int, payload: dict):
+        """ Create new crimping table. """
+        logging.debug(f'Creating new crtable matrix {payload}')
+        rq = f'{self.host}/crimp/table/{table_id}/matrix'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def getCrimptableMatrix(self, table_id: int, matrix_id: int, params: dict = {}):
+        """
+        Read crimping table matrix.
+        """
+        logging.debug(f'Reading crimping table {table_id}')
+        rq = f'{self.host}/crimp/table/{table_id}/matrix/{matrix_id}'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
+    def updateCrimptableMatrix(self, table_id: int, matrix_id: int, payload: dict):
+        """
+        Update crimping table matrix.
+        """
+        logging.debug(
+            f'Updating crimping table {table_id} matrix {matrix_id} with {payload}')
+        rq = f'{self.host}/crimp/table/{table_id}/matrix/{matrix_id}'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def getCrimptableMatrices(self, table_id: int, params: dict = {}):
+        """ Get crimping table matrices """
+        logging.debug(f'List crimptable {table_id} matrices {params}')
+        rq = f'{self.host}/crimp/table/{table_id}/matrix'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
+    # DEPRECATED VALUES
     # crimptable values
+
     def createCrimptableValue(self, table_id: int, payload: dict):
         """ Create new crimping table. """
         logging.debug(f'Creating new crtable {payload}')
