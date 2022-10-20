@@ -41,6 +41,17 @@ class Eb2(object):
         r = agent.get(rq, params=params)
         return self.s.response(r)
 
+    def getEmployeeFromUser(self, user_id: int, params: dict = {}):
+        """
+        Find employee from user id.
+        """
+        logging.debug(f'Get employee from user#{user_id}')
+        rq = f'{self.host}/employee/findByUser'
+        params = {**params, **{'user': user_id}}
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
     def getEmployees(self, params: dict = {}):
         """
         Prende tutti gli employees.
@@ -80,5 +91,3 @@ class Eb2(object):
         agent = self.s.getAgent()
         r = agent.patch(rq, json=payload)
         return self.s.response(r)
-
- 
