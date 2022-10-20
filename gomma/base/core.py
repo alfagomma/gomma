@@ -654,10 +654,37 @@ class Base(object):
         rq = f'{self.host}/user/findByEmail'
         agent = self.s.getAgent()
         r = agent.get(rq, params=query)
-        return self.s.response(r)        
+        return self.s.response(r)
+
+    def getUserByUsername(self, username: str, params: dict = {}):
+        """Get user details from username."""
+        logging.info(
+            f'Get user by username {username} with params {params}')
+        query = {**params, **{'username': username}}
+        rq = f'{self.host}/user/findByUsername'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=query)
+        return self.s.response(r)
+
+    def createUser(self, payload: dict = {}):
+        """ create new user."""
+        logging.info(f'Creating new user {payload}')
+        rq = f'{self.host}/user'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def updateUser(self, user_id: int, payload: dict):
+        """ 
+        Update user.
+        """
+        logging.info(f'Updateing user {user_id} - {payload}')
+        rq = f'{self.host}/user/{user_id}'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
 
     # internalnewsletter
-
     def listIntnewsletter(self, params: dict = {}):
         """
         Read all intnewsletter kpi.
