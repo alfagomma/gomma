@@ -70,74 +70,6 @@ class Session(object):
         self.redis = redis_instance
         return True
 
-    def __getToken(self):
-        """ Read session token. If not exists, it creates it. """
-        logging.debug('Init reading token..')
-        token = self.redis.hgetall(self.__cacheKey)
-        if not token:
-            token = self.__createToken()
-        return token
-
-    def __setToken(self, payload):
-        """save token """
-        logging.debug(f'Init set token {payload}')
-        expire_in = payload['expires_in']
-        uid = payload['access_token']
-        token = {
-            'uid': uid
-        }
-        tokenExpireAt = int(time.time()) + expire_in
-        self.redis.hmset(self.__cacheKey, token)
-        self.redis.expireat(self.__cacheKey, int(tokenExpireAt))
-        return token
-
-    def __createToken(self):
-        """ Create new session token. """
-        logging.debug(f'Init new session token ...')
-        agcloud_id = self.__credentials.get('agcloud_id')
-        agcloud_key = self.__credentials.get('agcloud_key')
-        host = self.config.get('agapi_host')
-        rqToken = f'{host}/auth/token'
-        rUid = requests.post(rqToken, auth=(agcloud_id, agcloud_key))
-        if 200 != rUid.status_code:
-            return False
-        responseUid = json.loads(rUid.text)
-        token = self.__setToken(responseUid)
-        return token
-
-    def __refreshToken(self):
-        """ Refresh current token. """
-        logging.debug(f'Init refresh token ...')
-        host = self.config.get('agapi_host')
-        rq = f'{host}/auth/token'
-        rqRefresh = self.__currentAgent.get(rq)
-        if 200 != rqRefresh.status_code:
-            return False
-        responseRefresh = json.loads(rqRefresh.text)
-        token = self.__setToken(responseRefresh)
-        return token
-
-    def __createSessionAgent(self, token=None):
-        """ Create requests session. """
-        logging.debug(f'Creating new requests session')
-        agent = requests.Session()
-        agent.headers.update(
-            {'user-agent': 'Gomma-sdk', 'Accept': 'application/json'})
-        if not token:
-            token = self.__getToken()
-            if not token:
-                logging.error(f'Unable to retrive token')
-                return False
-        logging.debug(f'Token is {token}')
-        try:
-            agent.headers.update({'x-uid': token['uid']})
-        except Exception:
-            logging.error("Invalid token uid keys")
-            return False
-        logging.debug('ok, saving current agent')
-        self.__currentAgent = agent
-        return agent
-
     def __manageRequestResponse(self, r: requests.Response):
         """ parsing requests response"""
         logging.debug(
@@ -186,23 +118,97 @@ class Session(object):
     #     }
     #     return response
 
+    def __createAgent(self):
+        """ Create requests session. """
+        logging.debug(f'Creating new requests session')
+        # recupero tokenid
+        uid = self.redis.hmget(self.__cacheKey, 'uid')[0]
+        if not uid:
+            logging.error(f'Unknow cache key uid in {self.__cacheKey}!')
+            return False
+        # instanzio requests session
+        agent = requests.Session()
+        agent.headers.update(
+            {
+                'user-agent': 'Gomma-sdk',
+                'Accept': 'application/json',
+                'x-uid': uid
+            })
+        return agent
+
+    def __createApiToken(self):
+        """ retrive new api token"""
+        agcloud_id = self.__credentials.get('agcloud_id')
+        agcloud_key = self.__credentials.get('agcloud_key')
+        host = self.config.get('agapi_host')
+        rqToken = f'{host}/auth/token'
+        rUid = requests.post(rqToken, auth=(agcloud_id, agcloud_key))
+        if 200 != rUid.status_code:
+            return False
+        data = json.loads(rUid.text)
+        return data
+
+    def __refreshApiToken(self, uid: str):
+        """ retrive new refreshed token"""
+        host = self.config.get('agapi_host')
+        rqToken = f'{host}/auth/token'
+        headers = {'x-uid': uid}
+        r = requests.get(rqToken, headers=headers)
+        if 200 != r.status_code:
+            return False
+        data = json.loads(r.text)
+        return data
+
+    def __setGomma(self, uid: str = None):
+        """ creo nuova sessione gomma. """
+        logging.debug(f'Init new session token ...')
+        if uid:
+            apitoken = self.__refreshApiToken(uid)
+        else:
+            apitoken = self.__createApiToken()
+        if not apitoken:
+            logging.error('Unable to read api token!')
+            return False
+        expire_in = apitoken['expires_in']
+        uid = apitoken['access_token']
+        data = {
+            'uid': uid
+        }
+        tokenExpireAt = int(time.time()) + expire_in
+        self.redis.hmset(self.__cacheKey, data)
+        # sottraggo 10 secondi: meglio che scada prima ag:gomma che la authkey delle api!
+        self.redis.expireat(self.__cacheKey, int(tokenExpireAt)-10)
+        return True
+
+    # devi verificare SEMPRE la chiave redis di GOMMA
+    def __getGomma(self):
+        """ Restituisce info della sessione gomma."""
+        # esiste?
+        if self.redis.exists(self.__cacheKey):
+            # prima verifico scadenze
+            gommattl = self.redis.ttl(self.__cacheKey)
+            if gommattl < 5:
+                logging.warning('gomma expired! ({}s left)'.format(gommattl))
+                # crea una nuova session
+                self.__setGomma()
+            elif 5 <= gommattl <= 900:
+                logging.warning(
+                    'gomma almost expired! ({}s left)'.format(gommattl))
+                # refresh session
+                uid = self.redis.hmget(self.__cacheKey, 'uid')[0]
+                self.__setGomma(uid)
+        else:
+            # creo nuovo session token
+            self.__setGomma()
+        # self.redis.hgetall(self.__cacheKey) # non mi serve
+        return True
+
     def getAgent(self, csrf=None):
         """Retrive API request session."""
         logging.debug('Get request agent')
-        if self.__currentAgent:
-            logging.debug('Gomma has already setup agent')
-            ttl = self.redis.ttl(self.__cacheKey)
-            if ttl < 2:
-                logging.debug('Invalid cache key')
-                agent = self.__createSessionAgent()
-            elif 2 <= ttl <= 900:
-                refreshedToken = self.__refreshToken()
-                agent = self.__createSessionAgent(refreshedToken)
-            else:
-                agent = self.__currentAgent
-        else:
-            logging.debug('self NON HA current agent')
-            agent = self.__createSessionAgent()
+        # sempre il doublecheck stato token
+        self.__getGomma()
+        agent = self.__createAgent()
         if not agent:
             raise Exception('Unknow GOMMA Agent!')
         return agent
