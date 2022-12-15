@@ -8,7 +8,7 @@ EB2 SDK
 
 __author__ = "Davide Pellegrino"
 __version__ = "1.1.2"
-__date__ = "2022-10-10"
+__date__ = "2022-12-15"
 
 import logging
 
@@ -90,4 +90,86 @@ class Eb2(object):
         rq = f'{self.host}/employee/{employee_id}'
         agent = self.s.getAgent()
         r = agent.patch(rq, json=payload)
+        return self.s.response(r)
+
+    # department
+    def getDepartment(self, department_id: int, params: dict = {}):
+        """
+        Read department from id.
+        """
+        logging.debug(f'Get department {department_id}')
+        rq = f'{self.host}/department/{department_id}'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
+    def getDepartments(self, params: dict = {}):
+        """
+        Prende tutti gli departments.
+        """
+        logging.debug('Getting all the departments')
+        rq = f'{self.host}/department'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
+    def createDepartment(self, payload: dict):
+        """
+        Create new department.
+        """
+        logging.debug(f'Creating department {payload}')
+        rq = f'{self.host}/department'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def updateDepartment(self, department_id: int, payload: dict):
+        """
+        Update department.
+        """
+        logging.debug(f'Updating department {department_id} with {payload}')
+        rq = f'{self.host}/department/{department_id}'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    # labortype
+    def getLabortype(self, labortype_id: int, params: dict = {}):
+        """
+        Read labortype from id.
+        """
+        logging.debug(f'Get labortype {labortype_id}')
+        rq = f'{self.host}/labortype/{labortype_id}'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
+    def getLabortypes(self, params: dict = {}):
+        """
+        Prende tutti gli labortypes.
+        """
+        logging.debug('Getting all the labortypes')
+        rq = f'{self.host}/labortype'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
+    def createLabortype(self, payload: dict):
+        """
+        Create new labortype.
+        """
+        logging.debug(f'Creating labortype {payload}')
+        rq = f'{self.host}/labortype'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def updateLabortype(self, labortype_id: int, payload: dict):
+        """
+        Update labortype.
+        """
+        logging.debug(f'Updating labortype {labortype_id} with {payload}')
+        rq = f'{self.host}/labortype/{labortype_id}'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
         return self.s.response(r)
