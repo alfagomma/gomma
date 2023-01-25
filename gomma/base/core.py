@@ -723,3 +723,33 @@ class Base(object):
         agent = self.s.getAgent()
         r = agent.post(rq, json=payload)
         return self.s.response(r)
+
+    # webhook
+    def listWebhooks(self, params: dict = {}):
+        """
+        Read all webhook kpi.
+        """
+        logging.info('Reading all webhook')
+        rq = f'{self.host}/webhook'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
+    def getWebhook(self, webhook_id: int, params: dict = {}):
+        """Get webhook details."""
+        logging.info(
+            f'Get webhook {webhook_id} with params {params}')
+        rq = f'{self.host}/webhook/{webhook_id}'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
+    def updateWebhook(self, webhook_id: int, payload: dict):
+        """ 
+        Update webhook.
+        """
+        logging.info(f'Updateing webhook {webhook_id} - {payload}')
+        rq = f'{self.host}/webhook/{webhook_id}'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
