@@ -139,10 +139,10 @@ class Session(object):
     def __createApiToken(self):
         """ retrive new api token"""
         agcloud_id = self.__credentials.get('agcloud_id')
-        agcloud_key = self.__credentials.get('agcloud_key')
+        agcloud_secret = self.__credentials.get('agcloud_secret')
         host = self.config.get('agapi_host')
         rqToken = f'{host}/auth/token'
-        rUid = requests.post(rqToken, auth=(agcloud_id, agcloud_key))
+        rUid = requests.post(rqToken, auth=(agcloud_id, agcloud_secret))
         if 200 != rUid.status_code:
             return False
         data = json.loads(rUid.text)
