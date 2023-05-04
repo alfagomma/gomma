@@ -22,7 +22,7 @@ class Session(object):
     """
 
     __currentAgent = False
-    __cacheKey = 'ag:gomma'
+    __cacheKey = 'agbot:gomma'
 
     def __init__(self, profile_name=None):
         """
@@ -132,7 +132,7 @@ class Session(object):
             {
                 'user-agent': 'Gomma-sdk',
                 'Accept': 'application/json',
-                'x-uid': uid
+                "Authorization": f"Bearer {uid}"
             })
         return agent
 
@@ -152,7 +152,7 @@ class Session(object):
         """ retrive new refreshed token"""
         host = self.config.get('agapi_host')
         rqToken = f'{host}/auth/token'
-        headers = {'x-uid': uid}
+        headers = {"Authorization": f"Bearer {uid}"}
         r = requests.get(rqToken, headers=headers)
         if 200 != r.status_code:
             return False
@@ -169,12 +169,13 @@ class Session(object):
         if not apitoken:
             logging.error('Unable to read api token!')
             return False
-        expire_in = apitoken['expires_in']
+        # read timestamp expire datetime
+        expires_at = apitoken['expires_at']
         uid = apitoken['access_token']
         data = {
             'uid': uid
         }
-        tokenExpireAt = int(time.time()) + expire_in
+        tokenExpireAt = int(time.time()) + expires_at
         self.redis.hmset(self.__cacheKey, data)
         # sottraggo 10 secondi: meglio che scada prima ag:gomma che la authkey delle api!
         self.redis.expireat(self.__cacheKey, int(tokenExpireAt)-10)
