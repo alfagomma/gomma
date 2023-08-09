@@ -154,13 +154,64 @@ class H2o(object):
         return self.s.response(r)
 
     # account
+    def getAccounts(self, params: dict = {}):
+        """
+        Read all accounts.
+        """
+        logging.debug('Getting all accounts')
+        rq = f'{self.host}/account'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
+    def getAccount(self, account_id: int, params: dict = {}):
+        """
+        Get account by id.
+        """
+        logging.debug(f'Reading account {account_id}...')
+        rq = f'{self.host}/account/{account_id}'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
+    def createAccount(self, payload: dict):
+        """
+        Create new account.
+        """
+        logging.debug(f'Init creating account {payload}...')
+        rq = f'{self.host}/account'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def getAccountByEmail(self, email: str, params: dict = {}):
+        """Get account details."""
+        logging.info(
+            f'Get account by email {email} with params {params}')
+        query = {**params, **{'email': email}}
+        rq = f'{self.host}/account/findByEmail'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=query)
+        return self.s.response(r)
+        
     def create_customer_account(self, customer_id: int, payload: dict):
         """
         Add new customer account.
         """
         logging.debug(f'Add customer {customer_id} account {payload} ...')
+        rq = f'{self.host}/customer/{customer_id}/account/create'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+    
+    def attach_customer_account(self, customer_id: int, account_id: int):
+        """
+        Attach existing account to customer.
+        """
+        logging.debug(f'Attach account {account_id} to customer {customer_id} ')
         rq = f'{self.host}/customer/{customer_id}/account'
         agent = self.s.getAgent()
+        payload = {'account_id': account_id}
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
@@ -329,4 +380,69 @@ class H2o(object):
         rq = f'{self.host}/invoice/type'
         agent = self.s.getAgent()
         r = agent.get(rq, json=payload)
+        return self.s.response(r)
+
+
+    # salesgroup
+
+    def createSalesgroup(self, payload: dict):
+        """
+        Create new salesgroup.
+        """
+        logging.debug('Init creating salesgroup...')
+        rq = f'{self.host}/salesgroup'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def getSalesgroups(self, params: dict = {}):
+        """
+        Read all salesgroup.
+        """
+        logging.debug('Getting all salesgroup')
+        rq = f'{self.host}/salesgroup'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
+    def getSalesgroup(self, salesgroup_id: int, params: dict = {}):
+        """
+        Get salesgroup by id.
+        """
+        logging.debug(f'Reading salesgroup {salesgroup_id}...')
+        rq = f'{self.host}/salesgroup/{salesgroup_id}'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+
+    def attach_salesgroup_customer(self, salesgroup_id: int, customer_id: int):
+        """
+        Add new salesgroup customer.
+        """
+        logging.debug(
+            f'Add salesgroup {salesgroup_id} customer {customer_id} ...')
+        rq = f'{self.host}/salesgroup/{salesgroup_id}/customer'
+        payload = {'customer_id': customer_id}
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def detach_salesgroup_customer(self, salesgroup_id: int, customer_id: int):
+        """
+        Remove salesgroup customer.
+        """
+        logging.debug(f'Remove salesgroup {salesgroup_id} customer {customer_id} ...')
+        rq = f'{self.host}/salesgroup/{salesgroup_id}/customer/{customer_id}'
+        agent = self.s.getAgent()
+        r = agent.delete(rq)
+        return self.s.response(r)
+
+    def getCustomerSalesgroup(self, customer_id: int, params: dict = {}):
+        """
+        Get customer salesgroups.
+        """
+        logging.debug(f'Reading customer {customer_id}...')
+        rq = f'{self.host}/customer/{customer_id}/salesgroup'
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
         return self.s.response(r)
