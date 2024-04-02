@@ -225,6 +225,40 @@ class H2o(object):
         agent = self.s.getAgent()
         r = agent.delete(rq)
         return self.s.response(r)
+    
+    # supplier
+    def create_supplier_account(self, supplier_id: int, payload: dict):
+        """
+        Add new supplier account.
+        """
+        logging.debug(f'Add supplier {supplier_id} account {payload} ...')
+        rq = f'{self.host}/supplier/{supplier_id}/account/create'
+        agent = self.s.getAgent()
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+    
+    def attach_supplier_account(self, supplier_id: int, account_id: int):
+        """
+        Attach existing account to supplier.
+        """
+        logging.debug(f'Attach account {account_id} to supplier {supplier_id} ')
+        rq = f'{self.host}/supplier/{supplier_id}/account'
+        agent = self.s.getAgent()
+        payload = {'account_id': account_id}
+        r = agent.post(rq, json=payload)
+        return self.s.response(r)
+
+    def delete_supplier_account(self, supplier_id: int, account_id: int):
+        """
+        Remove supplier account.
+        """
+        logging.debug(
+            f'Remove supplier {supplier_id} account {account_id} ...')
+        rq = f'{self.host}/supplier/{supplier_id}/account/{account_id}'
+        agent = self.s.getAgent()
+        r = agent.delete(rq)
+        return self.s.response(r)
+
 
     # customer markets
     def attachCustomerMarket(self, customer_id: int, market_id: int):
