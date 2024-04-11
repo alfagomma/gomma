@@ -384,6 +384,16 @@ class Element(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
+    def getFamilyItems(self, family_id: int, params: dict = {}):
+        """
+        Tutti gli item della famiglia.
+        """
+        logging.debug(f"Reading family {family_id}")
+        rq = f"{self.host}/family/{family_id}/item"
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+    
     def getFamilyFromCode(self, family_code: str, params: dict = {}):
         """Prende famiglia da nome"""
         logging.debug(f"Get family from code {family_code} with {params}")
@@ -575,6 +585,14 @@ class Element(object):
         return self.s.response(r)
 
     # category
+    def listCategory(self, params: dict = {}):
+        """Get category by ID"""
+        logging.debug(f"List categories {params}")
+        rq = f"{self.host}/category"
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+        
     def createCategory(self, payload: dict):
         """
         Crea un categoria.
@@ -585,6 +603,16 @@ class Element(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
+    def getCategory(self, category_id: int, params: dict = {}):
+        """
+        Prende categoria.
+        """
+        logging.debug(f"Find category by id {category_id}")
+        rq = f"{self.host}/category/{category_id}"
+        agent = self.s.getAgent()
+        r = agent.get(rq, params=params)
+        return self.s.response(r)
+    
     def getCategoryByName(self, category_name: str, params: dict = {}):
         """
         Prende categoria da nome.
