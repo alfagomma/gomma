@@ -93,6 +93,18 @@ class Coral(object):
         r = agent.patch(rq, json=payload)
         return self.s.response(r)
 
+    # legal address
+    def supplier_update_legal_address(self, supplier_id: int, payload: dict):
+        """
+        Update supplier legal address.
+        """
+        logging.debug(f'Updating supplier {supplier_id} legaladdress with {payload}')
+        rq = f'{self.host}/supplier/{supplier_id}/legaladdress'
+        agent = self.s.getAgent()
+        r = agent.patch(rq, json=payload)
+        return self.s.response(r)
+
+
     # supplier company
 
     def supplier_list_company(self, supplier_id: int, params: dict = {}):
