@@ -10,6 +10,7 @@ dist
 build
 docs/build
 docs/source/reference/services
+tests/
 tests/cover
 tests/.coverage
 *.egg-info

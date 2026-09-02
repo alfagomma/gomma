@@ -149,14 +149,14 @@ class Coral(object):
         r = agent.post(rq, json=payload)
         return self.s.response(r)
 
-    def supplier_detach_erp(self, supplier_id: int, erp_id: int):
+    def supplier_detach_erp(self, supplier_id: int, erp_id: int, code: str):
         """
-        Remove supplier erp xref.
+        Remove one exact supplier erp xref.
         """
-        logging.debug(f"Remove supplier {supplier_id} ERP {erp_id} ...")
+        logging.debug(f"Remove supplier {supplier_id} ERP {erp_id} xref {code} ...")
         rq = f"{self.host}/supplier/{supplier_id}/erp/{erp_id}"
         agent = self.s.getAgent()
-        r = agent.delete(rq)
+        r = agent.delete(rq, params={"code": f"{code}"})
         return self.s.response(r)
 
     # supplier account
